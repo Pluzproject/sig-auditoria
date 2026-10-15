@@ -37,7 +37,7 @@
 
   .sidebar { grid-area: sidebar; background: linear-gradient(180deg, var(--azul) 0%, var(--azul-dark) 100%); color: var(--blanco); padding: 16px 0; display: flex; flex-direction: column; overflow-y: auto; }
   .brand { padding: 0 18px 14px; border-bottom: 1px solid rgba(255,255,255,0.12); margin-bottom: 12px; }
-  .brand-text h1 { font-size: 15px; font-weight: bold; color: var(--blanco); line-height: 1.15; }
+  .brand-text h1 { font-size: 22px; font-weight: bold; color: var(--blanco); line-height: 1.15; letter-spacing: 2px; }
   .brand-text p { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px; }
   .brand-meta { background: rgba(255,255,255,0.08); border-radius: var(--radio-sm); padding: 6px 10px; font-size: 11px; color: rgba(255,255,255,0.85); display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
   .brand-meta strong { color: var(--amarillo); font-weight: bold; }
@@ -83,13 +83,37 @@
   .cd-block { background: rgba(255,255,255,0.10); border-radius: var(--radio-sm); padding: 10px 14px; text-align: center; min-width: 68px; border: 1px solid rgba(255,255,255,0.12); }
   .cd-num { font-size: 26px; font-weight: bold; line-height: 1; color: var(--amarillo); letter-spacing: -1px; }
   .cd-lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.7); font-weight: bold; margin-top: 5px; }
-  .hero-right { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; gap: 6px; }
-  .hero-status { padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
-  .hero-status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-  .hero-status.ok { background: rgba(108,172,94,0.22); color: #C4E5B9; }
-  .hero-status.warn { background: rgba(251,193,63,0.22); color: var(--amarillo); }
-  .hero-status.risk { background: rgba(230,126,34,0.22); color: #FFD9AF; }
-  .hero-status.crit { background: rgba(192,57,43,0.25); color: #FFB3AB; }
+  .hero-right { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; gap: 8px; }
+
+  /* ===== HERO STATUS · versión con fondo oscuro legible ===== */
+  .hero-status {
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    background: rgba(0,0,0,0.28);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.18);
+    backdrop-filter: blur(4px);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+  .hero-status::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 8px currentColor;
+    flex-shrink: 0;
+  }
+  .hero-status.ok   { color: #A8E89A; }
+  .hero-status.warn { color: #FFD966; }
+  .hero-status.risk { color: #FFB877; }
+  .hero-status.crit { color: #FF9B90; }
 
   .kpi-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 280px)); gap: 14px; margin-bottom: 18px; justify-content: start; }
   @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -177,8 +201,6 @@
 
   .item-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; padding-right: 220px; }
   .item-clause { font-size: 11px; font-weight: bold; color: var(--azul); background: var(--azul-soft); padding: 2px 8px; border-radius: 5px; }
-  .item-covers { font-size: 10px; color: var(--gris-text); display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
-  .item-covers .cov { background: var(--gris-soft); padding: 2px 6px; border-radius: 3px; font-weight: bold; color: var(--azul); font-size: 10px; }
   .item-q { font-size: 12px; font-weight: bold; color: var(--azul); margin-bottom: 8px; line-height: 1.5; }
   .item-ev { font-size: 11px; color: var(--azul); background: var(--gris-soft); border-radius: 6px; padding: 8px 10px; margin-bottom: 12px; border-left: 3px solid var(--amarillo); }
   .item-ev strong { color: var(--azul); font-weight: bold; }
@@ -343,21 +365,73 @@
   .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(120px); background: var(--azul); color: var(--blanco); padding: 11px 20px; border-radius: var(--radio-sm); font-size: 12px; font-weight: bold; box-shadow: var(--sombra-lg); z-index: 2000; opacity: 0; transition: transform 0.25s, opacity 0.25s; pointer-events: none; border-left: 4px solid var(--amarillo); }
   .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-  .milestone-list { display: flex; flex-direction: column; gap: 8px; }
-  .milestone { display: grid; grid-template-columns: 80px 1fr auto; gap: 12px; align-items: center; padding: 10px 12px; border-radius: var(--radio-sm); background: var(--gris-soft); border-left: 4px solid var(--gris-line-2); }
-  .milestone.ok { border-left-color: var(--verde); background: #F1F9EF; }
-  .milestone.warn { border-left-color: var(--amarillo); background: #FEFBEF; }
-  .milestone.risk { border-left-color: var(--naranja); background: #FEF6EE; }
-  .milestone.crit { border-left-color: var(--rojo); background: #FDF3F2; }
-  .milestone-date { font-size: 11px; font-weight: bold; color: var(--azul); text-align: center; }
-  .milestone-date small { display: block; font-size: 9px; color: var(--gris-text); font-weight: normal; margin-top: 1px; }
-  .milestone-title { font-size: 12px; font-weight: bold; color: var(--azul); }
-  .milestone-desc { font-size: 10px; color: var(--gris-text); margin-top: 1px; }
-  .milestone-status { font-size: 10px; font-weight: bold; white-space: nowrap; }
-  .milestone-status.ok { color: var(--verde-dark); }
-  .milestone-status.warn { color: #9C7815; }
-  .milestone-status.risk { color: #A1500F; }
-  .milestone-status.crit { color: var(--rojo); }
+  /* ===== PRÓXIMOS VENCIMIENTOS ===== */
+  .due-list { display: flex; flex-direction: column; gap: 8px; }
+  .due-row {
+    display: grid;
+    grid-template-columns: 76px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: var(--radio-sm);
+    background: var(--gris-soft);
+    border-left: 4px solid var(--gris-line-2);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .due-row:hover { background: var(--azul-soft); }
+  .due-row.vencido { border-left-color: var(--rojo); background: #FDF3F2; }
+  .due-row.urgente { border-left-color: var(--naranja); background: #FEF6EE; }
+  .due-row.proximo { border-left-color: var(--amarillo); background: #FEFBEF; }
+  .due-row.lejano  { border-left-color: var(--azul-claro); background: #F1F6FC; }
+
+  .due-days { text-align: center; line-height: 1.15; }
+  .due-days b { font-size: 20px; font-weight: bold; display: block; letter-spacing: -0.5px; }
+  .due-days small { font-size: 9px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--gris-text); font-weight: bold; }
+  .due-row.vencido .due-days b { color: var(--rojo); }
+  .due-row.urgente .due-days b { color: var(--naranja); }
+  .due-row.proximo .due-days b { color: #9C7815; }
+  .due-row.lejano .due-days b  { color: var(--azul); }
+
+  .due-info { min-width: 0; }
+  .due-title {
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--azul);
+    margin-bottom: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.35;
+  }
+  .due-meta {
+    font-size: 10px;
+    color: var(--gris-text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .due-owner {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    color: var(--gris-text);
+    white-space: nowrap;
+  }
+  .due-owner .avatar { width: 22px; height: 22px; font-size: 9px; }
+
+  .due-empty {
+    text-align: center;
+    padding: 24px 16px;
+    color: var(--gris-text);
+    font-size: 11px;
+  }
+  .due-empty .big { font-size: 28px; margin-bottom: 6px; color: var(--verde); opacity: 0.6; }
 
   .reason-list { display: flex; flex-direction: column; gap: 8px; }
   .reason-item { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; padding: 10px 12px; border-radius: var(--radio-sm); background: var(--gris-soft); border-left: 4px solid var(--gris-line-2); align-items: center; cursor: pointer; }
@@ -413,8 +487,7 @@
   #checklist.compact .item { padding: 12px 18px; margin-bottom: 8px; }
   #checklist.compact .item:not(.open) .item-ev,
   #checklist.compact .item:not(.open) .item-meta,
-  #checklist.compact .item:not(.open) .item-actions,
-  #checklist.compact .item:not(.open) .item-covers { display: none; }
+  #checklist.compact .item:not(.open) .item-actions { display: none; }
   #checklist.compact .item-head, #checklist.compact .item-q { cursor: pointer; }
   #checklist.compact .item:not(.open) .item-q { margin-bottom: 8px; }
   #checklist.compact .item-head::before { content: "▸"; color: var(--gris-text); transition: transform .15s; }
@@ -555,11 +628,10 @@
 
         <div class="panel">
           <div class="panel-head">
-            <div class="panel-title"><span class="dot" style="background:var(--verde)"></span> Hitos previos</div>
+            <div class="panel-title"><span class="dot" style="background:var(--naranja)"></span> Próximos vencimientos</div>
+            <div class="panel-sub">Ítems abiertos con fecha límite más cercana</div>
           </div>
-          <div class="panel-body">
-            <div class="milestone-list" id="milestoneList"></div>
-          </div>
+          <div class="panel-body" id="dueSoonBody"></div>
         </div>
       </div>
 
@@ -683,16 +755,17 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
 <script>
 /* ============================================================
    CONFIGURACIÓN · Google Sheets (Apps Script)
    ============================================================ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyaACtbzlAo38fMbFXZd0kKt_N6caOzh2YSwEqOSBS_l5-yVFS86KNaDoj09UYP6m8fcg/exec';
 const API_KEY = 'sig-auditoria-2026-x7k9m2';
-const SYNC_INTERVAL = 120000; // 2 minutos
+const SYNC_INTERVAL = 120000;
 
 /* ============================================================
-   1. CONSTANTES Y CATÁLOGOS
+   1. CONSTANTES
    ============================================================ */
 const COLORES = { "Transversal":"#3B599F", "ISO 9001":"#3B599F", "ISO 14001":"#6CAC5E", "ISO 45001":"#FBC13F", "ISO 37001":"#2C4276", "ISO 50001":"#4F8A42" };
 const BLOQUES = ["Transversal","ISO 9001","ISO 14001","ISO 45001","ISO 37001","ISO 50001"];
@@ -716,14 +789,12 @@ let owners = cargarOwners();
 let auditDate = cargarFecha();
 let progressHistory = cargarHistorial();
 let currentUser = localStorage.getItem('sig_user_name') || '';
-
-/* Estado de sincronización */
-let syncState = 'idle'; // idle | saving | connected | error
+let syncState = 'idle';
 let lastSyncAt = null;
 let isSaving = false;
 
 /* ============================================================
-   3. PERSISTENCIA LOCAL (solo preferencias, no datos)
+   3. PERSISTENCIA LOCAL
    ============================================================ */
 const STORAGE_OWNERS = 'sig_audit_v12_owners';
 const STORAGE_DATE = 'sig_audit_v12_date';
@@ -807,7 +878,6 @@ function setSyncStatus(status) {
                     status === 'error' ? 'Sin conexión' : 'Conectando…';
 }
 
-/* Convierte una fila del Sheet al formato interno */
 function parseRow(row) {
   return {
     id: parseInt(row.id),
@@ -927,6 +997,7 @@ function getLoadRatio(pct) {
   if (!avg) return 0;
   return pct / avg;
 }
+
 /* ============================================================
    7. NAVEGACIÓN
    ============================================================ */
@@ -1007,19 +1078,18 @@ function updateCountdown() {
   const f = calcularProyeccion();
   const statusEl = document.getElementById('heroStatus');
   let label, cls;
-  if (c.past) { label = 'Auditoría en curso o pasada'; cls = 'crit'; }
+  if (c.past) { label = 'Auditoría en curso'; cls = 'crit'; }
   else {
     const dias = c.d;
-    if (f.pctActual === 100) { label = '✓ Todos los ítems cerrados'; cls = 'ok'; }
+    if (f.pctActual === 100) { label = '✓ Todo cerrado'; cls = 'ok'; }
     else if (f.pctFinal === null) {
-      if (dias <= 7) { label = `⚠ Últimos ${dias} días · faltan ${f.itemsPorResolver} ítems`; cls = 'risk'; }
-      else { label = `◔ Faltan ${f.itemsPorResolver} ítems · sin historial para proyectar`; cls = 'warn'; }
+      if (dias <= 7) { label = `⚠ Últimos ${dias} días`; cls = 'risk'; }
+      else { label = `${f.itemsPorResolver} ítems pendientes`; cls = 'warn'; }
     }
-    else if (f.pctFinal >= 95 && dias > 15) { label = '✓ Proyección: llegarás a tiempo'; cls = 'ok'; }
-    else if (f.pctFinal >= 80 && dias > 7) { label = '◐ Vas bien, revisa la ruta crítica'; cls = 'warn'; }
-    else if (dias <= 7 && f.pctFinal < 95) { label = `⚠ Últimos ${dias} días · Riesgo`; cls = 'risk'; }
-    else if (f.pctFinal >= 95) { label = '✓ Proyección: llegarás a tiempo'; cls = 'ok'; }
-    else { label = '⛔ No llegarás a tiempo · Acción urgente'; cls = 'crit'; }
+    else if (f.pctFinal >= 95) { label = '✓ Llegarás a tiempo'; cls = 'ok'; }
+    else if (f.pctFinal >= 80) { label = '◐ Revisa la ruta crítica'; cls = 'warn'; }
+    else if (dias <= 7) { label = `⚠ Últimos ${dias} días`; cls = 'risk'; }
+    else { label = '⛔ No llegarás a tiempo'; cls = 'crit'; }
   }
   statusEl.textContent = label;
   statusEl.className = 'hero-status ' + cls;
@@ -1086,35 +1156,88 @@ function renderForecast() {
 }
 
 /* ============================================================
-   9. HITOS
+   9. PRÓXIMOS VENCIMIENTOS
    ============================================================ */
 function renderMilestones() {
-  const dA = new Date(auditDate);
-  const hitos = [
-    { o:45, t:"Cierre de acciones correctivas", d:"NC internas cerradas" },
-    { o:30, t:"Pre-auditoría interna completa", d:"Auditoría interna del SIG" },
-    { o:21, t:"Documentación aprobada", d:"Procedimientos y registros firmados" },
-    { o:14, t:"Revisión por la dirección", d:"Acta firmada completa" },
-    { o:7,  t:"Simulacro de auditoría", d:"Repaso de evidencias" },
-    { o:3,  t:"Cierre de pendientes", d:"Checklist 100% preparado" },
-    { o:1,  t:"Briefing final", d:"Logística lista" }
-  ];
-  document.getElementById('milestoneList').innerHTML = hitos.map(h => {
-    const fecha = new Date(dA); fecha.setDate(fecha.getDate() - h.o);
-    const diff = (fecha - new Date()) / 86400000;
-    let cls, s;
-    if (diff < -3) { cls='crit'; s='VENCIDO'; }
-    else if (diff < 0) { cls='risk'; s='HOY'; }
-    else if (diff <= 5) { cls='warn'; s=`En ${Math.ceil(diff)} días`; }
-    else { cls='ok'; s=`En ${Math.ceil(diff)} días`; }
+  const container = document.getElementById('dueSoonBody');
+  if (!container) return;
+
+  const hoy = new Date();
+  hoy.setHours(0,0,0,0);
+
+  const abiertos = state.map((s, i) => ({ s, item: auditData[i], idx: i }))
+    .filter(x => x.s.due && !CERRADOS.includes(x.s.status))
+    .map(x => {
+      const due = new Date(x.s.due + 'T00:00:00');
+      const diff = Math.round((due - hoy) / 86400000);
+      return { ...x, due, diff };
+    })
+    .sort((a, b) => a.diff - b.diff)
+    .slice(0, 5);
+
+  if (!abiertos.length) {
+    container.innerHTML = `
+      <div class="due-empty">
+        <div class="big">✓</div>
+        <div>Sin vencimientos pendientes</div>
+        <div style="font-size:10px;margin-top:4px">Los ítems con fecha límite están cerrados o no tienen fecha asignada.</div>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = `<div class="due-list">${abiertos.map(({ s, item, idx, diff }) => {
+    let nivel, numTxt, lblTxt;
+    if (diff < 0) {
+      nivel = 'vencido';
+      numTxt = Math.abs(diff);
+      lblTxt = diff === -1 ? 'día' : 'días';
+    } else if (diff === 0) {
+      nivel = 'urgente';
+      numTxt = 'HOY';
+      lblTxt = '';
+    } else if (diff <= 3) {
+      nivel = 'urgente';
+      numTxt = diff;
+      lblTxt = diff === 1 ? 'día' : 'días';
+    } else if (diff <= 7) {
+      nivel = 'proximo';
+      numTxt = diff;
+      lblTxt = 'días';
+    } else {
+      nivel = 'lejano';
+      numTxt = diff;
+      lblTxt = 'días';
+    }
+
+    const fechaFmt = new Date(s.due + 'T00:00:00').toLocaleDateString('es-ES', { day:'2-digit', month:'short' });
+    const q = item.q.length > 80 ? item.q.slice(0,80) + '…' : item.q;
+
     return `
-      <div class="milestone ${cls}">
-        <div class="milestone-date">${fecha.toLocaleDateString('es-ES',{day:'2-digit',month:'short'})}<small>${fecha.getFullYear()}</small></div>
-        <div><div class="milestone-title">${h.t}</div><div class="milestone-desc">${h.d}</div></div>
-        <div class="milestone-status ${cls}">${s}</div>
+      <div class="due-row ${nivel}" data-due-idx="${idx}">
+        <div class="due-days">
+          <b>${numTxt}</b>
+          <small>${lblTxt}</small>
+        </div>
+        <div class="due-info">
+          <div class="due-title">${q}</div>
+          <div class="due-meta">
+            ${chipBloque(item.std)}
+            <span>${item.clause}</span>
+            <span>·</span>
+            <span>${fechaFmt}</span>
+          </div>
+        </div>
+        <div class="due-owner">
+          ${avatarHTML(s.owner)}
+          <span>${(s.owner || 'Sin asignar').split(' ').slice(0,2).join(' ')}</span>
+        </div>
       </div>
     `;
-  }).join('');
+  }).join('')}</div>`;
+
+  container.querySelectorAll('[data-due-idx]').forEach(row => {
+    row.onclick = () => goToItem(parseInt(row.dataset.dueIdx));
+  });
 }
 
 /* ============================================================
@@ -1636,6 +1759,7 @@ function updateOwnerFilterOptions() {
   sel.innerHTML = `<option value="all">Todos los responsables</option>` + owners.map(o => `<option value="${o.name}">${o.name}</option>`).join('');
   sel.value = owners.some(o => o.name === current) ? current : 'all';
 }
+
 /* ============================================================
    11. EVENTOS DE ITEMS
    ============================================================ */
@@ -1693,7 +1817,7 @@ function handleInput(e) {
   clearTimeout(window._inputTimer);
   window._inputTimer = setTimeout(async () => {
     await guardarItem(state[parseInt(idx)].id, { [field]: e.target.value });
-    if (field === 'due') { renderChecklist(); renderCriticalList(); }
+    if (field === 'due') { renderChecklist(); renderCriticalList(); renderMilestones(); }
   }, 800);
 }
 
@@ -1707,7 +1831,6 @@ async function handleClick(e) {
   showToast('Estado limpiado');
 }
 
-/* Filtros del checklist */
 document.getElementById('filterSeg').addEventListener('click', e => {
   if (e.target.tagName !== 'BUTTON') return;
   document.querySelectorAll('#filterSeg button').forEach(b => b.classList.remove('active'));
@@ -1738,7 +1861,6 @@ document.getElementById('searchInput').addEventListener('input', e => {
   renderChecklist();
 });
 
-/* Compacto / expandido */
 document.getElementById('checklist').addEventListener('click', e => {
   if (!compactMode) return;
   const h = e.target.closest('.item-head, .item-q'); if (!h) return;
@@ -1759,7 +1881,6 @@ document.getElementById('btnToggleAll').addEventListener('click', () => {
   applyChecklistUI();
 });
 
-/* Heatmap */
 const hmEl = document.getElementById('heatmap');
 hmEl.addEventListener('mouseover', e => {
   const c = e.target.closest('[data-hm]'); if (!c) return;
@@ -1773,7 +1894,6 @@ hmEl.addEventListener('click', e => {
   const l = e.target.closest('[data-hl]'); if (l) { hmHl = hmHl === l.dataset.hl ? null : l.dataset.hl; renderHeatmap(); }
 });
 
-/* Drill-down desde KPIs y barras */
 document.getElementById('kpiGrid').addEventListener('click', e => {
   const k = e.target.closest('.kpi'); if (!k) return;
   const i = [...k.parentNode.children].indexOf(k);
@@ -2040,7 +2160,7 @@ function deleteOwner(id) {
 }
 
 /* ============================================================
-   14. FECHA DE AUDITORÍA
+   14. FECHA
    ============================================================ */
 document.getElementById('btnSetDate').addEventListener('click', openDateModal);
 document.getElementById('btnChangeDate').addEventListener('click', openDateModal);
@@ -2051,7 +2171,7 @@ function openDateModal() {
   document.getElementById('modalBody').innerHTML = `
     <label>Fecha de auditoría externa</label>
     <input type="date" id="dateInput" value="${iso}">
-    <div style="font-size:11px;color:var(--gris-text)">A partir de esta fecha se calcula la cuenta regresiva, los hitos y la proyección.</div>
+    <div style="font-size:11px;color:var(--gris-text)">A partir de esta fecha se calcula la cuenta regresiva y la proyección.</div>
   `;
   document.getElementById('modal').classList.add('show');
   modalCallback = () => {
@@ -2067,7 +2187,7 @@ document.getElementById('btnExportJSON').addEventListener('click', () => {
   const f = calcularProyeccion();
   const ownersSummary = owners.map(o => ({ ...o, stats: computeOwnerStats(o.name), reason: computeReason(o.name), carga: getOwnerLoadPct(o.name) }));
   const data = {
-    meta: { fechaAuditoria: auditDate.toISOString(), exportado: new Date().toISOString(), preparacionActual: f.pctActual, proyeccionFinal: f.pctFinal, diasRestantes: f.diasRestantes, exportadoPor: currentUser },
+    meta: { fechaAuditoria: auditDate.toISOString(), exportado: new Date().toISOString(), preparacionActual: f.pctActual, proyeccionFinal: f.pctFinal, diasRestantes: f.diasRestantes },
     equipo: ownersSummary,
     items: auditData.map((d, i) => ({
       id: state[i].id, bloque: d.std, clausula: d.clause, pregunta: d.q, evidencia: d.ev,
@@ -2097,7 +2217,7 @@ document.getElementById('btnExportCSV').addEventListener('click', () => {
 document.getElementById('btnPrint').addEventListener('click', () => window.print());
 
 /* ============================================================
-   16. SINCRONIZACIÓN AUTOMÁTICA
+   16. SINCRONIZACIÓN
    ============================================================ */
 let syncInProgress = false;
 
@@ -2166,7 +2286,6 @@ document.getElementById('modalConfirm').addEventListener('click', () => {
   modalCallback = null;
 });
 
-/* Atajos de teclado */
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     if (document.getElementById('modal').classList.contains('show')) document.getElementById('modalCancel').click();
