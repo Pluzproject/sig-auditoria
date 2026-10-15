@@ -1,4 +1,4 @@
-# SIG Readiness · Preparación de Auditoría
+# SIG · Preparación de Auditoría
 
 Herramienta web colaborativa para el seguimiento de la preparación de la auditoría externa del Sistema Integrado de Gestión (SIG).
 
