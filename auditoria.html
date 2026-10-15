@@ -1,0 +1,2211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIG Readiness · Preparación Auditoría</title>
+<style>
+  :root {
+    --amarillo: #FBC13F;
+    --azul: #3B599F;
+    --azul-dark: #2C4276;
+    --azul-soft: #EEF1F9;
+    --verde: #6CAC5E;
+    --verde-dark: #4F8A42;
+    --verde-suave: #A8C89F;
+    --azul-claro: #6FA8DC;
+    --blanco: #FFFFFF;
+    --gris-bg: #F5F6F8;
+    --gris-line: #E3E6ED;
+    --gris-line-2: #D5D9E2;
+    --gris-text: #6B7280;
+    --gris-soft: #F0F1F4;
+    --rojo: #C0392B;
+    --naranja: #E67E22;
+    --sombra-sm: 0 1px 2px rgba(59,89,159,0.06);
+    --sombra: 0 2px 8px rgba(59,89,159,0.08);
+    --sombra-md: 0 6px 20px rgba(59,89,159,0.10);
+    --sombra-lg: 0 16px 40px rgba(59,89,159,0.14);
+    --radio: 10px;
+    --radio-sm: 6px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body { font-family: Arial, Helvetica, sans-serif; font-size: 12px; line-height: 1.55; color: var(--azul); background: var(--gris-bg); }
+
+  .app { display: grid; grid-template-columns: 230px 1fr; grid-template-rows: 64px 1fr; grid-template-areas: "sidebar topbar" "sidebar main"; min-height: 100vh; }
+
+  .sidebar { grid-area: sidebar; background: linear-gradient(180deg, var(--azul) 0%, var(--azul-dark) 100%); color: var(--blanco); padding: 16px 0; display: flex; flex-direction: column; overflow-y: auto; }
+  .brand { padding: 0 18px 14px; border-bottom: 1px solid rgba(255,255,255,0.12); margin-bottom: 12px; }
+  .brand-text h1 { font-size: 15px; font-weight: bold; color: var(--blanco); line-height: 1.15; }
+  .brand-text p { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+  .brand-meta { background: rgba(255,255,255,0.08); border-radius: var(--radio-sm); padding: 6px 10px; font-size: 11px; color: rgba(255,255,255,0.85); display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+  .brand-meta strong { color: var(--amarillo); font-weight: bold; }
+  .nav-section { padding: 12px 18px 6px; font-size: 10px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+  .nav { display: flex; flex-direction: column; gap: 1px; padding: 0 10px; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--radio-sm); color: rgba(255,255,255,0.85); cursor: pointer; font-size: 12px; font-weight: bold; border: none; background: transparent; text-align: left; width: 100%; transition: background 0.15s; }
+  .nav-item:hover { background: rgba(255,255,255,0.08); color: var(--blanco); }
+  .nav-item.active { background: var(--amarillo); color: var(--azul-dark); }
+  .nav-item.active .ico { color: var(--azul-dark); }
+  .nav-item .ico { width: 16px; text-align: center; font-size: 13px; color: var(--amarillo); }
+  .nav-item .count { margin-left: auto; font-size: 10px; background: rgba(255,255,255,0.14); padding: 2px 7px; border-radius: 10px; color: rgba(255,255,255,0.9); font-weight: bold; }
+  .nav-item.active .count { background: rgba(59,89,159,0.18); color: var(--azul-dark); }
+
+  .topbar { grid-area: topbar; background: var(--blanco); border-bottom: 1px solid var(--gris-line); display: flex; align-items: center; padding: 0 24px; gap: 16px; box-shadow: var(--sombra-sm); }
+  .topbar-title { font-size: 15px; font-weight: bold; color: var(--azul); line-height: 1.2; }
+  .topbar-title small { display: block; font-size: 11px; font-weight: normal; color: var(--gris-text); margin-top: 2px; }
+  .topbar-actions { margin-left: auto; display: flex; gap: 6px; align-items: center; }
+  .search { padding: 8px 12px; border: 1px solid var(--gris-line-2); border-radius: var(--radio-sm); font-size: 12px; width: 200px; color: var(--azul); background: var(--gris-soft); transition: border-color 0.15s; }
+  .search::placeholder { color: var(--gris-text); }
+  .search:focus { outline: none; border-color: var(--azul); background: var(--blanco); }
+  .icon-btn { width: 34px; height: 34px; border-radius: var(--radio-sm); border: 1px solid var(--gris-line-2); background: var(--blanco); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; color: var(--azul); transition: background 0.15s, border-color 0.15s; }
+  .icon-btn:hover { background: var(--azul-soft); border-color: var(--azul); }
+
+  .btn { padding: 8px 14px; border-radius: var(--radio-sm); border: 1px solid var(--gris-line-2); font-size: 12px; font-weight: bold; cursor: pointer; transition: background 0.15s, border-color 0.15s; background: var(--blanco); color: var(--azul); display: inline-flex; align-items: center; gap: 6px; }
+  .btn:hover { background: var(--azul-soft); border-color: var(--azul); }
+  .btn-primary { background: var(--azul); color: var(--blanco); border-color: var(--azul); }
+  .btn-primary:hover { background: var(--azul-dark); border-color: var(--azul-dark); color: var(--blanco); }
+  .btn-amarillo { background: var(--amarillo); color: var(--azul-dark); border-color: var(--amarillo); }
+  .btn-amarillo:hover { background: #F0B32A; border-color: #F0B32A; color: var(--azul-dark); }
+  .btn-sm { padding: 5px 10px; font-size: 11px; }
+
+  .main { grid-area: main; padding: 20px 24px; overflow-y: auto; max-height: calc(100vh - 64px); }
+  .view { display: none; }
+  .view.active { display: block; }
+
+  .hero { background: linear-gradient(135deg, var(--azul) 0%, var(--azul-dark) 100%); color: var(--blanco); border-radius: var(--radio); padding: 20px 24px; margin-bottom: 18px; display: grid; grid-template-columns: 1fr auto; gap: 22px; box-shadow: var(--sombra-md); position: relative; overflow: hidden; }
+  .hero::before { content: ""; position: absolute; top: -60px; right: -60px; width: 220px; height: 220px; border-radius: 50%; background: rgba(251,193,63,0.15); }
+  .hero-left { position: relative; z-index: 1; }
+  .hero-label { font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase; color: rgba(255,255,255,0.7); font-weight: bold; margin-bottom: 4px; }
+  .hero-title { font-size: 15px; font-weight: bold; margin-bottom: 3px; }
+  .hero-date { font-size: 11px; color: rgba(255,255,255,0.75); margin-bottom: 12px; }
+  .countdown { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+  .cd-block { background: rgba(255,255,255,0.10); border-radius: var(--radio-sm); padding: 10px 14px; text-align: center; min-width: 68px; border: 1px solid rgba(255,255,255,0.12); }
+  .cd-num { font-size: 26px; font-weight: bold; line-height: 1; color: var(--amarillo); letter-spacing: -1px; }
+  .cd-lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.7); font-weight: bold; margin-top: 5px; }
+  .hero-right { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; gap: 6px; }
+  .hero-status { padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+  .hero-status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .hero-status.ok { background: rgba(108,172,94,0.22); color: #C4E5B9; }
+  .hero-status.warn { background: rgba(251,193,63,0.22); color: var(--amarillo); }
+  .hero-status.risk { background: rgba(230,126,34,0.22); color: #FFD9AF; }
+  .hero-status.crit { background: rgba(192,57,43,0.25); color: #FFB3AB; }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 280px)); gap: 14px; margin-bottom: 18px; justify-content: start; }
+  @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 700px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  .kpi { background: var(--blanco); border-radius: var(--radio); padding: 16px 18px; box-shadow: var(--sombra); border: 1px solid var(--gris-line); position: relative; overflow: hidden; }
+  .kpi::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--kpi-color, var(--azul)); }
+  .kpi-label { font-size: 10px; color: var(--gris-text); text-transform: uppercase; letter-spacing: 0.8px; font-weight: bold; margin-bottom: 8px; }
+  .kpi-value { font-size: 26px; font-weight: bold; line-height: 1; color: var(--kpi-color, var(--azul)); letter-spacing: -1px; }
+  .kpi-value small { font-size: 12px; font-weight: normal; color: var(--gris-text); margin-left: 3px; }
+  .kpi-sub { font-size: 11px; color: var(--gris-text); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--gris-line); }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  @media (max-width: 1100px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .panel { background: var(--blanco); border-radius: var(--radio); border: 1px solid var(--gris-line); box-shadow: var(--sombra); overflow: hidden; }
+  .panel-head { padding: 14px 18px; border-bottom: 1px solid var(--gris-line); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .panel-title { font-size: 13px; font-weight: bold; color: var(--azul); display: flex; align-items: center; gap: 8px; }
+  .panel-title .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amarillo); }
+  .panel-sub { font-size: 11px; color: var(--gris-text); font-weight: normal; }
+  .panel-body { padding: 18px; }
+
+  .section-title { font-size: 11px; font-weight: bold; color: var(--gris-text); text-transform: uppercase; letter-spacing: 1px; margin: 24px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--gris-line); display: flex; align-items: center; gap: 8px; }
+  .section-title::before { content: ""; width: 3px; height: 12px; background: var(--azul); border-radius: 2px; }
+
+  .forecast { background: var(--azul-soft); border-radius: var(--radio-sm); padding: 14px; border-left: 4px solid var(--amarillo); }
+  .forecast-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 12px; }
+  .forecast-row + .forecast-row { border-top: 1px dashed var(--gris-line-2); }
+  .forecast-row strong { color: var(--azul); font-weight: bold; }
+  .forecast-note { font-size: 10px; color: var(--gris-text); font-style: italic; padding: 6px 0 0; border-top: 1px dashed var(--gris-line-2); margin-top: 4px; }
+  .forecast-verdict { margin-top: 12px; padding: 10px 12px; border-radius: var(--radio-sm); font-size: 11px; font-weight: bold; line-height: 1.4; }
+  .forecast-verdict.ok { background: #E5F3E1; color: var(--verde-dark); }
+  .forecast-verdict.warn { background: #FEF3D6; color: #9C7815; }
+  .forecast-verdict.risk { background: #FBE5D0; color: #A1500F; }
+  .forecast-verdict.crit { background: #FADBD8; color: var(--rojo); }
+
+  .iso-row { display: grid; grid-template-columns: 130px 1fr 60px; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--gris-soft); cursor: pointer; border-radius: 6px; transition: background .15s; }
+  .iso-row:last-child { border-bottom: none; }
+  .iso-row:hover { background: var(--azul-soft); }
+  .iso-name { font-size: 12px; font-weight: bold; color: var(--azul); display: flex; align-items: center; gap: 7px; }
+  .iso-name .chip { width: 9px; height: 9px; border-radius: 3px; background: var(--chip, var(--azul)); flex-shrink: 0; }
+  .bar { height: 22px; background: var(--gris-soft); border-radius: 5px; overflow: hidden; display: flex; position: relative; border: 1px solid var(--gris-line); }
+  .bar-seg { height: 100%; }
+  .bar-seg.actualizado { background: var(--verde); }
+  .bar-seg.vigente { background: var(--verde-suave); }
+  .bar-seg.proceso { background: var(--azul-claro); }
+  .bar-seg.observado { background: var(--rojo); }
+  .bar-seg.no-iniciado { background: #E8EAF0; }
+  .iso-pct { font-size: 13px; font-weight: bold; text-align: right; color: var(--azul); }
+
+  .legend-box { background: var(--azul-soft); border-radius: var(--radio-sm); padding: 12px 14px; border-left: 4px solid var(--azul); display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px 16px; }
+  .legend-box-item { display: flex; align-items: flex-start; gap: 8px; font-size: 11px; color: var(--azul); line-height: 1.4; }
+  .legend-box-item .sw { width: 11px; height: 11px; border-radius: 3px; flex-shrink: 0; margin-top: 2px; }
+  .legend-box-item strong { display: block; font-weight: bold; margin-bottom: 2px; }
+
+  .toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; padding: 12px 16px; background: var(--blanco); border-radius: var(--radio); border: 1px solid var(--gris-line); box-shadow: var(--sombra-sm); }
+  .toolbar .spacer { flex: 1; }
+  .seg { display: inline-flex; background: var(--gris-soft); border-radius: var(--radio-sm); padding: 3px; gap: 2px; border: 1px solid var(--gris-line); }
+  .seg button { padding: 6px 12px; border: none; background: transparent; border-radius: 5px; font-size: 11px; font-weight: bold; cursor: pointer; color: var(--gris-text); transition: background 0.15s; }
+  .seg button.active { background: var(--azul); color: var(--blanco); }
+  select.filter-select { padding: 7px 10px; border: 1px solid var(--gris-line-2); border-radius: var(--radio-sm); font-size: 11px; font-weight: bold; color: var(--azul); background: var(--blanco); cursor: pointer; }
+  select.filter-select:focus { outline: none; border-color: var(--azul); }
+
+  .item { background: var(--blanco); border: 1px solid var(--gris-line); border-radius: var(--radio); padding: 16px 18px; margin-bottom: 10px; box-shadow: var(--sombra-sm); border-left: 4px solid var(--gris-line); position: relative; transition: background 0.15s, box-shadow 0.15s; }
+  .item:hover { background: #FAFBFE; box-shadow: var(--sombra); }
+  .item[data-std="ISO 9001"] { border-left-color: var(--azul); }
+  .item[data-std="ISO 14001"] { border-left-color: var(--verde); }
+  .item[data-std="ISO 45001"] { border-left-color: var(--amarillo); }
+  .item[data-std="ISO 37001"] { border-left-color: var(--azul-dark); }
+  .item[data-std="ISO 50001"] { border-left-color: var(--verde-dark); }
+  .item[data-std="Transversal"] { border-left-color: var(--azul-claro); }
+
+  .item-badges { position: absolute; top: 16px; right: 18px; display: flex; gap: 6px; align-items: center; }
+  .item.is-critical .item-badges::before { content: "CRÍTICO"; background: var(--rojo); color: var(--blanco); font-size: 9px; font-weight: bold; letter-spacing: 0.8px; padding: 3px 7px; border-radius: 4px; }
+  .due-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 7px; border-radius: 4px; font-size: 10px; font-weight: bold; letter-spacing: 0.4px; white-space: nowrap; }
+  .due-badge.vencido { background: var(--rojo); color: var(--blanco); }
+  .due-badge.proximo { background: var(--amarillo); color: var(--azul-dark); }
+  .due-badge.info { background: var(--gris-soft); color: var(--gris-text); }
+  .due-badge::before { content: "⚑"; font-size: 11px; }
+
+  .weight-chip { display: inline-flex; align-items: center; gap: 3px; padding: 3px 8px; border-radius: 10px; font-size: 10px; font-weight: bold; }
+  .weight-chip.p1 { background: #F0F1F4; color: var(--gris-text); }
+  .weight-chip.p2 { background: #E3F0FA; color: #2C6CA1; }
+  .weight-chip.p4 { background: #FADBD8; color: var(--rojo); }
+  .weight-dots { letter-spacing: 1px; }
+
+  .item-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; padding-right: 220px; }
+  .item-clause { font-size: 11px; font-weight: bold; color: var(--azul); background: var(--azul-soft); padding: 2px 8px; border-radius: 5px; }
+  .item-covers { font-size: 10px; color: var(--gris-text); display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+  .item-covers .cov { background: var(--gris-soft); padding: 2px 6px; border-radius: 3px; font-weight: bold; color: var(--azul); font-size: 10px; }
+  .item-q { font-size: 12px; font-weight: bold; color: var(--azul); margin-bottom: 8px; line-height: 1.5; }
+  .item-ev { font-size: 11px; color: var(--azul); background: var(--gris-soft); border-radius: 6px; padding: 8px 10px; margin-bottom: 12px; border-left: 3px solid var(--amarillo); }
+  .item-ev strong { color: var(--azul); font-weight: bold; }
+
+  .status-group { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .status-opt { display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px; border: 1.5px solid var(--gris-line-2); border-radius: var(--radio-sm); cursor: pointer; font-size: 11px; font-weight: bold; transition: background 0.15s, border-color 0.15s, color 0.15s; user-select: none; background: var(--blanco); color: var(--gris-text); position: relative; }
+  .status-opt:hover { border-color: var(--azul); color: var(--azul); }
+  .status-opt input { display: block; position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+  .status-opt .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gris-line-2); }
+  .status-opt[data-val="actualizado"] .dot { background: var(--verde); }
+  .status-opt[data-val="vigente"] .dot { background: var(--verde-suave); }
+  .status-opt[data-val="proceso"] .dot { background: var(--azul-claro); }
+  .status-opt[data-val="observado"] .dot { background: var(--rojo); }
+  .status-opt.selected { color: var(--blanco); }
+  .status-opt[data-val="actualizado"].selected { background: var(--verde); border-color: var(--verde); color: var(--blanco); }
+  .status-opt[data-val="actualizado"].selected .dot { background: var(--blanco); }
+  .status-opt[data-val="vigente"].selected { background: var(--verde-suave); border-color: var(--verde-suave); color: var(--blanco); }
+  .status-opt[data-val="vigente"].selected .dot { background: var(--blanco); }
+  .status-opt[data-val="proceso"].selected { background: var(--azul-claro); border-color: var(--azul-claro); color: var(--blanco); }
+  .status-opt[data-val="proceso"].selected .dot { background: var(--blanco); }
+  .status-opt[data-val="observado"].selected { background: var(--rojo); border-color: var(--rojo); color: var(--blanco); }
+  .status-opt[data-val="observado"].selected .dot { background: var(--blanco); }
+  .status-opt[data-val="no-iniciado"].selected { background: var(--azul); border-color: var(--azul); color: var(--blanco); }
+  .status-opt[data-val="no-iniciado"].selected .dot { background: var(--blanco); }
+
+  .item-meta { display: grid; grid-template-columns: 1fr 1fr 1fr 2fr 90px; gap: 8px; margin-bottom: 10px; }
+  .item-meta select, .item-meta input { padding: 8px 10px; border: 1px solid var(--gris-line-2); border-radius: var(--radio-sm); font-size: 11px; background: var(--blanco); width: 100%; color: var(--azul); }
+  .item-meta select { cursor: pointer; font-weight: bold; }
+  .item-meta input::placeholder { color: var(--gris-text); }
+  .item-meta select:focus, .item-meta input:focus { outline: none; border-color: var(--azul); }
+  .item-meta .weight-select { font-weight: bold; }
+
+  .item-actions { display: flex; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--gris-soft); align-items: center; flex-wrap: wrap; }
+  .item-actions button { font-size: 11px; padding: 5px 10px; border-radius: 5px; border: 1px solid var(--gris-line-2); background: var(--blanco); color: var(--gris-text); cursor: pointer; font-weight: bold; }
+  .item-actions button:hover { background: var(--azul-soft); color: var(--azul); border-color: var(--azul); }
+  .item-actions .critical-toggle { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: bold; color: var(--gris-text); cursor: pointer; }
+
+  .pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 20px; font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .pill.actualizado { background: #E5F3E1; color: var(--verde-dark); }
+  .pill.vigente { background: #EFF7EC; color: var(--verde-dark); }
+  .pill.proceso { background: #E3F0FA; color: #2C6CA1; }
+  .pill.observado { background: #FADBD8; color: var(--rojo); }
+  .pill.no-iniciado { background: var(--gris-soft); color: var(--gris-text); }
+  .pill::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+  .std-chip { display: inline-block; padding: 3px 9px; border-radius: 5px; font-size: 10px; font-weight: bold; color: var(--blanco); white-space: nowrap; }
+  .std-chip[data-std="ISO 9001"] { background: var(--azul); }
+  .std-chip[data-std="ISO 14001"] { background: var(--verde); }
+  .std-chip[data-std="ISO 45001"] { background: var(--amarillo); color: var(--azul-dark); }
+  .std-chip[data-std="ISO 37001"] { background: var(--azul-dark); }
+  .std-chip[data-std="ISO 50001"] { background: var(--verde-dark); }
+  .std-chip[data-std="Transversal"] { background: linear-gradient(90deg, var(--azul), var(--verde)); }
+
+  .owner-cell { display: flex; align-items: center; gap: 8px; }
+  .avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--blanco); font-weight: bold; font-size: 10px; flex-shrink: 0; }
+  .avatar.lg { width: 36px; height: 36px; font-size: 12px; }
+
+  .owner-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
+  .owner-card { background: var(--blanco); border-radius: var(--radio); border: 1px solid var(--gris-line); box-shadow: var(--sombra-sm); overflow: hidden; display: flex; flex-direction: column; transition: box-shadow 0.15s; }
+  .owner-card:hover { box-shadow: var(--sombra-md); }
+  .owner-card.nivel-crit { border-left: 5px solid var(--rojo); }
+  .owner-card.nivel-risk { border-left: 5px solid var(--naranja); }
+  .owner-card.nivel-warn { border-left: 5px solid var(--amarillo); }
+  .owner-card.nivel-ok { border-left: 5px solid var(--verde); }
+  .owner-card-head { padding: 12px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--gris-line); }
+  .owner-card.nivel-crit .owner-card-head { background: #FDF3F2; }
+  .owner-card.nivel-risk .owner-card-head { background: #FEF6EE; }
+  .owner-card.nivel-warn .owner-card-head { background: #FEFBEF; }
+  .owner-card.nivel-ok .owner-card-head { background: #F5FAF3; }
+  .owner-info { flex: 1; min-width: 0; }
+  .owner-name { font-size: 13px; font-weight: bold; color: var(--azul); margin-bottom: 1px; }
+  .owner-role { font-size: 10px; color: var(--gris-text); text-transform: uppercase; letter-spacing: 0.5px; font-weight: bold; }
+  .owner-badges { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+  .owner-load-badge { font-size: 11px; font-weight: bold; padding: 4px 8px; border-radius: var(--radio-sm); text-align: center; background: var(--azul-soft); color: var(--azul); }
+  .owner-load-badge .lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.4px; color: var(--gris-text); display: block; }
+  .owner-card-body { padding: 12px 14px; }
+  .zone { margin-bottom: 12px; }
+  .zone:last-child { margin-bottom: 0; }
+  .zone-label { font-size: 9px; font-weight: bold; letter-spacing: 1px; color: var(--gris-text); text-transform: uppercase; margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px dashed var(--gris-line); display: flex; align-items: center; justify-content: space-between; }
+  .zone-label .zone-hint { font-size: 9px; font-weight: normal; letter-spacing: 0; text-transform: none; color: var(--gris-text); opacity: 0.7; }
+  .owner-reason { border-radius: 6px; padding: 8px 10px; font-size: 11px; line-height: 1.4; background: var(--blanco); border: 1px solid var(--gris-line); }
+  .owner-reason.crit { border-color: #F5C6C0; color: var(--rojo); font-weight: bold; }
+  .owner-reason.risk { border-color: #F5D5B8; color: #A1500F; font-weight: bold; }
+  .owner-reason.warn { border-color: #F5E1A8; color: #9C7815; font-weight: bold; }
+  .owner-reason.ok { border-color: #CFE5C8; color: var(--verde-dark); font-weight: bold; }
+  .owner-reason small { display: block; font-weight: normal; color: var(--gris-text); margin-top: 2px; font-size: 10px; }
+  .owner-metrics-line { display: flex; gap: 8px; flex-wrap: wrap; font-size: 11px; }
+  .owner-metrics-line span { display: inline-flex; align-items: center; gap: 4px; color: var(--gris-text); }
+  .owner-metrics-line strong { color: var(--azul); font-weight: bold; }
+  .owner-metrics-line .ok strong { color: var(--verde-dark); }
+  .owner-metrics-line .obs strong { color: var(--rojo); }
+  .owner-metrics-line .proc strong { color: #2C6CA1; }
+  .owner-progress { height: 6px; background: var(--gris-soft); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+  .owner-progress-fill { height: 100%; }
+  .owner-actions { display: flex; gap: 6px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--gris-soft); }
+  .owner-actions button { flex: 1; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--gris-line-2); background: var(--blanco); color: var(--azul); font-size: 11px; font-weight: bold; cursor: pointer; white-space: nowrap; }
+  .owner-actions button:hover { background: var(--azul-soft); border-color: var(--azul); }
+  .owner-actions button.icon-only { flex: 0 0 auto; padding: 6px 10px; }
+
+  .load-row { display: grid; grid-template-columns: 130px 1fr 130px; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--gris-soft); }
+  .load-row:last-child { border-bottom: none; }
+  .load-name { font-size: 11px; font-weight: bold; color: var(--azul); display: flex; align-items: center; gap: 7px; overflow: hidden; }
+  .load-name span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .load-bar { height: 20px; background: var(--gris-soft); border-radius: 4px; position: relative; overflow: hidden; border: 1px solid var(--gris-line); }
+  .load-bar-fill { height: 100%; }
+  .load-bar-avg { position: absolute; top: 0; bottom: 0; width: 2px; border-left: 2px dashed var(--azul-dark); left: 50%; transform: translateX(-1px); }
+  .load-meta { font-size: 11px; text-align: right; color: var(--gris-text); }
+  .load-meta strong { color: var(--azul); }
+  .load-meta .ratio { display: block; font-size: 10px; font-weight: bold; margin-top: 2px; }
+  .load-meta .ratio.ok { color: var(--verde-dark); }
+  .load-meta .ratio.warn { color: #9C7815; }
+  .load-meta .ratio.crit { color: var(--rojo); }
+  .load-warning { background: #FEF3D6; border-left: 3px solid var(--amarillo); padding: 8px 10px; border-radius: 6px; font-size: 11px; color: #9C7815; margin-bottom: 12px; font-weight: bold; }
+
+  .actions-list { display: flex; flex-direction: column; gap: 8px; }
+  .action-item { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; padding: 10px 12px; border-radius: var(--radio-sm); background: var(--blanco); border: 1px solid var(--gris-line); border-left: 4px solid var(--azul); align-items: center; }
+  .action-item.crit { border-left-color: var(--rojo); }
+  .action-item.risk { border-left-color: var(--naranja); }
+  .action-item.warn { border-left-color: var(--amarillo); }
+  .action-item .ico-big { font-size: 18px; }
+  .action-text { font-size: 12px; color: var(--azul); }
+  .action-text strong { font-weight: bold; }
+  .action-text small { color: var(--gris-text); display: block; margin-top: 1px; font-size: 11px; }
+
+  .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .data-table thead th { text-align: left; padding: 10px 12px; font-size: 10px; color: var(--azul); text-transform: uppercase; letter-spacing: 0.6px; background: var(--azul-soft); font-weight: bold; border-bottom: 2px solid var(--azul); white-space: nowrap; }
+  .data-table td { padding: 10px 12px; border-bottom: 1px solid var(--gris-soft); vertical-align: middle; color: var(--azul); font-size: 12px; }
+  .data-table tbody tr:hover { background: #FAFBFE; }
+  #criticalBody tr { cursor: pointer; }
+  #criticalBody tr:hover td { background: var(--azul-soft); }
+
+  .empty { text-align: center; padding: 50px 20px; color: var(--gris-text); font-size: 12px; }
+  .empty .big { font-size: 36px; margin-bottom: 10px; color: var(--azul); opacity: 0.3; }
+
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(44,66,118,0.55); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+  .modal-backdrop.show { display: flex; }
+  .modal { background: var(--blanco); border-radius: var(--radio); max-width: 700px; width: 100%; box-shadow: var(--sombra-lg); overflow: hidden; max-height: 90vh; display: flex; flex-direction: column; }
+  .modal-head { padding: 16px 20px; border-bottom: 1px solid var(--gris-line); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .modal-head h2 { font-size: 15px; font-weight: bold; color: var(--azul); }
+  .modal-body { padding: 20px; font-size: 12px; color: var(--azul); overflow-y: auto; }
+  .modal-body label { display: block; font-weight: bold; margin-bottom: 6px; color: var(--azul); font-size: 11px; }
+  .modal-body input[type="text"], .modal-body input[type="date"], .modal-body input[type="email"] { width: 100%; padding: 9px 12px; border: 1px solid var(--gris-line-2); border-radius: var(--radio-sm); font-size: 12px; color: var(--azul); margin-bottom: 12px; }
+  .modal-body input:focus { outline: none; border-color: var(--azul); }
+  .color-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .color-opt { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; }
+  .color-opt.selected { border-color: var(--azul); }
+  .modal-foot { padding: 14px 20px; border-top: 1px solid var(--gris-line); display: flex; gap: 8px; justify-content: flex-end; background: var(--gris-soft); }
+
+  .assign-list { display: flex; flex-direction: column; gap: 8px; max-height: 55vh; overflow-y: auto; margin-top: 6px; }
+  .assign-row { display: flex; gap: 10px; padding: 10px 12px; border-radius: var(--radio-sm); border: 1px solid var(--gris-line); background: var(--blanco); align-items: flex-start; cursor: pointer; }
+  .assign-row:hover { border-color: var(--azul); background: var(--azul-soft); }
+  .assign-row.assigned { border-left: 4px solid var(--verde); }
+  .assign-row input[type="checkbox"] { margin-top: 2px; width: 15px; height: 15px; accent-color: var(--azul); cursor: pointer; flex-shrink: 0; }
+  .assign-info { flex: 1; min-width: 0; }
+  .assign-head { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; flex-wrap: wrap; }
+  .assign-q { font-size: 11px; font-weight: bold; color: var(--azul); margin-bottom: 3px; }
+  .assign-ev { font-size: 10px; color: var(--gris-text); }
+  .assign-filters { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
+  .assign-actions { display: flex; gap: 6px; margin-bottom: 10px; padding: 10px; border-radius: var(--radio-sm); background: var(--gris-soft); align-items: center; flex-wrap: wrap; }
+  .assign-actions .count { font-weight: bold; color: var(--azul); margin-right: auto; font-size: 11px; }
+
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(120px); background: var(--azul); color: var(--blanco); padding: 11px 20px; border-radius: var(--radio-sm); font-size: 12px; font-weight: bold; box-shadow: var(--sombra-lg); z-index: 2000; opacity: 0; transition: transform 0.25s, opacity 0.25s; pointer-events: none; border-left: 4px solid var(--amarillo); }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  .milestone-list { display: flex; flex-direction: column; gap: 8px; }
+  .milestone { display: grid; grid-template-columns: 80px 1fr auto; gap: 12px; align-items: center; padding: 10px 12px; border-radius: var(--radio-sm); background: var(--gris-soft); border-left: 4px solid var(--gris-line-2); }
+  .milestone.ok { border-left-color: var(--verde); background: #F1F9EF; }
+  .milestone.warn { border-left-color: var(--amarillo); background: #FEFBEF; }
+  .milestone.risk { border-left-color: var(--naranja); background: #FEF6EE; }
+  .milestone.crit { border-left-color: var(--rojo); background: #FDF3F2; }
+  .milestone-date { font-size: 11px; font-weight: bold; color: var(--azul); text-align: center; }
+  .milestone-date small { display: block; font-size: 9px; color: var(--gris-text); font-weight: normal; margin-top: 1px; }
+  .milestone-title { font-size: 12px; font-weight: bold; color: var(--azul); }
+  .milestone-desc { font-size: 10px; color: var(--gris-text); margin-top: 1px; }
+  .milestone-status { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .milestone-status.ok { color: var(--verde-dark); }
+  .milestone-status.warn { color: #9C7815; }
+  .milestone-status.risk { color: #A1500F; }
+  .milestone-status.crit { color: var(--rojo); }
+
+  .reason-list { display: flex; flex-direction: column; gap: 8px; }
+  .reason-item { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; padding: 10px 12px; border-radius: var(--radio-sm); background: var(--gris-soft); border-left: 4px solid var(--gris-line-2); align-items: center; cursor: pointer; }
+  .reason-item.crit { border-left-color: var(--rojo); background: #FDF3F2; }
+  .reason-item.risk { border-left-color: var(--naranja); background: #FEF6EE; }
+  .reason-item.warn { border-left-color: var(--amarillo); background: #FEFBEF; }
+  .reason-item.ok { border-left-color: var(--verde); background: #F1F9EF; }
+  .reason-item:hover { background: var(--azul-soft); }
+  .reason-text { font-size: 11px; color: var(--azul); }
+  .reason-text strong { font-weight: bold; }
+  .reason-text small { color: var(--gris-text); display: block; margin-top: 2px; font-size: 10px; }
+  .reason-badge { font-size: 10px; font-weight: bold; padding: 3px 9px; border-radius: 12px; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.4px; }
+  .reason-badge.crit { background: #FADBD8; color: var(--rojo); }
+  .reason-badge.risk { background: #FBE5D0; color: #A1500F; }
+  .reason-badge.warn { background: #FEF3D6; color: #9C7815; }
+  .reason-badge.ok { background: #E5F3E1; color: var(--verde-dark); }
+
+  .sync-status { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; background: var(--gris-soft); color: var(--gris-text); border: 1px solid var(--gris-line); transition: all 0.3s; white-space: nowrap; }
+  .sync-status .dot-sync { width: 8px; height: 8px; border-radius: 50%; background: var(--gris-text); }
+  .sync-status.connected { background: #E5F3E1; color: var(--verde-dark); border-color: #CFE5C8; }
+  .sync-status.connected .dot-sync { background: var(--verde); }
+  .sync-status.saving { background: #FEF3D6; color: #9C7815; border-color: #F5E1A8; }
+  .sync-status.saving .dot-sync { background: var(--amarillo); animation: pulse 1s infinite; }
+  .sync-status.error { background: #FADBD8; color: var(--rojo); border-color: #F5C6C0; }
+  .sync-status.error .dot-sync { background: var(--rojo); }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .ring { position: relative; width: 84px; height: 84px; margin-bottom: 4px; }
+  .ring svg { width: 100%; height: 100%; }
+  .ring circle { fill: none; stroke-width: 4; }
+  .ring-bg { stroke: rgba(255,255,255,.14); }
+  .ring-fg { stroke-linecap: round; stroke-dasharray: 113.1; stroke-dashoffset: 113.1; transition: stroke-dashoffset .9s cubic-bezier(.2,.7,.2,1), stroke .4s; }
+  .ring-txt { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
+  .ring-txt b { font-size: 18px; line-height: 1; }
+  .ring-txt small { font-size: 9px; opacity: .7; margin-top: 2px; }
+
+  .hm-row { display: grid; grid-template-columns: 120px 1fr 44px; gap: 12px; align-items: center; padding: 6px 0; }
+  .hm-name { font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 7px; }
+  .hm-name .chip { width: 9px; height: 9px; border-radius: 3px; flex-shrink: 0; }
+  .hm-cells { display: flex; flex-wrap: wrap; gap: 4px; }
+  .hm-cell { position: relative; width: 24px; height: 24px; border-radius: 5px; border: none; cursor: pointer; transition: transform .12s, opacity .15s; }
+  .hm-cell:hover, .hm-cell:focus-visible { transform: scale(1.25); z-index: 1; outline: 2px solid var(--azul-dark); }
+  .hm-cell.crit::after { content: ""; position: absolute; top: 3px; right: 3px; width: 6px; height: 6px; border-radius: 50%; background: var(--azul-dark); }
+  .hm-cell.dim { opacity: .18; }
+  .hm-pct { font-size: 12px; font-weight: bold; text-align: right; }
+  .hm-detail { margin-top: 10px; padding: 9px 12px; background: var(--azul-soft); border-left: 4px solid var(--amarillo); border-radius: var(--radio-sm); font-size: 11px; min-height: 40px; }
+  .hm-legend { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .hm-leg { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border: 1px solid var(--gris-line-2); border-radius: 14px; background: #fff; font-size: 11px; color: var(--azul); cursor: pointer; }
+  .hm-leg:hover { border-color: var(--azul); }
+  .hm-leg.on { background: var(--azul); color: #fff; border-color: var(--azul); }
+  .hm-leg .sw { width: 10px; height: 10px; border-radius: 3px; }
+
+  #checklist.compact .item { padding: 12px 18px; margin-bottom: 8px; }
+  #checklist.compact .item:not(.open) .item-ev,
+  #checklist.compact .item:not(.open) .item-meta,
+  #checklist.compact .item:not(.open) .item-actions,
+  #checklist.compact .item:not(.open) .item-covers { display: none; }
+  #checklist.compact .item-head, #checklist.compact .item-q { cursor: pointer; }
+  #checklist.compact .item:not(.open) .item-q { margin-bottom: 8px; }
+  #checklist.compact .item-head::before { content: "▸"; color: var(--gris-text); transition: transform .15s; }
+  #checklist.compact .item.open .item-head::before { transform: rotate(90deg); }
+  .item.flash { animation: flash 1.6s ease-out; }
+  @keyframes flash { 0%, 40% { box-shadow: 0 0 0 3px var(--amarillo); } 100% { box-shadow: var(--sombra-sm); } }
+
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  @media (max-width: 900px) { .hm-row { grid-template-columns: 1fr 40px; } .hm-name { grid-column: 1 / -1; } }
+  @media print { .ring, .hm-legend, .sync-status { display: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-text">
+        <h1>SIG Readiness</h1>
+        <p>Preparación Auditoría</p>
+      </div>
+      <div class="brand-meta">
+        <span>Auditoría</span>
+        <strong id="sideDate">—</strong>
+      </div>
+    </div>
+
+    <div class="nav-section">Panel</div>
+    <nav class="nav">
+      <button class="nav-item active" data-view="dashboard"><span class="ico">◧</span> Cuadro de mando</button>
+      <button class="nav-item" data-view="equipo"><span class="ico">👥</span> Equipo <span class="count" id="navOwners">0</span></button>
+      <button class="nav-item" data-view="rutaCritica"><span class="ico">★</span> Ruta crítica <span class="count" id="navCrit">0</span></button>
+      <button class="nav-item" data-view="checklist"><span class="ico">☑</span> Checklist <span class="count" id="navCount">0</span></button>
+    </nav>
+
+    <div class="nav-section">Bloques</div>
+    <nav class="nav">
+      <button class="nav-item" data-filter="Transversal"><span class="ico">◈</span> Transversal SIG <span class="count">0%</span></button>
+      <button class="nav-item" data-filter="ISO 9001"><span class="ico">▪</span> ISO 9001 <span class="count">0%</span></button>
+      <button class="nav-item" data-filter="ISO 14001"><span class="ico">▪</span> ISO 14001 <span class="count">0%</span></button>
+      <button class="nav-item" data-filter="ISO 45001"><span class="ico">▪</span> ISO 45001 <span class="count">0%</span></button>
+      <button class="nav-item" data-filter="ISO 37001"><span class="ico">▪</span> ISO 37001 <span class="count">0%</span></button>
+      <button class="nav-item" data-filter="ISO 50001"><span class="ico">▪</span> ISO 50001 <span class="count">0%</span></button>
+    </nav>
+  </aside>
+
+  <header class="topbar">
+    <div class="topbar-title">
+      Preparación para Auditoría Externa
+      <small id="topbarSub">Cuadro de mando · SIG</small>
+    </div>
+    <div class="topbar-actions">
+      <span class="sync-status" id="syncStatus" title="Estado de sincronización con Google Sheets">
+        <span class="dot-sync"></span>
+        <span id="syncText">Conectando...</span>
+      </span>
+      <input type="text" class="search" id="searchInput" placeholder="Buscar…  ( / )">
+      <button class="icon-btn" id="btnSync" title="Sincronizar ahora">⟳</button>
+      <button class="icon-btn" id="btnSetDate" title="Fijar fecha de auditoría">📅</button>
+      <button class="icon-btn" id="btnPrint" title="Imprimir">⎙</button>
+      <button class="btn btn-sm" id="btnExportJSON">📥 JSON</button>
+      <button class="btn btn-sm" id="btnExportCSV">📊 CSV</button>
+    </div>
+  </header>
+
+  <main class="main" id="main">
+
+    <!-- DASHBOARD -->
+    <section class="view active" id="view-dashboard">
+      <div class="hero">
+        <div class="hero-left">
+          <div class="hero-label">Cuenta regresiva a la auditoría externa</div>
+          <div class="hero-title">Auditoría Externa · Sistema Integrado de Gestión</div>
+          <div class="hero-date" id="heroDate">—</div>
+          <div class="countdown">
+            <div class="cd-block"><div class="cd-num" id="cdD">0</div><div class="cd-lbl">Días</div></div>
+            <div class="cd-block"><div class="cd-num" id="cdH">0</div><div class="cd-lbl">Horas</div></div>
+            <div class="cd-block"><div class="cd-num" id="cdM">0</div><div class="cd-lbl">Min</div></div>
+            <div class="cd-block"><div class="cd-num" id="cdS">0</div><div class="cd-lbl">Seg</div></div>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="ring" title="Preparación global"><svg viewBox="0 0 44 44"><circle class="ring-bg" cx="22" cy="22" r="18"/><circle class="ring-fg" id="ringFg" cx="22" cy="22" r="18" transform="rotate(-90 22 22)"/></svg><div class="ring-txt"><b id="ringPct">0%</b><small>listo</small></div></div>
+          <div class="hero-status" id="heroStatus">—</div>
+          <button class="btn btn-sm btn-amarillo" id="btnChangeDate" style="margin-top:6px">Cambiar fecha</button>
+        </div>
+      </div>
+
+      <div class="section-title">Estado del Sistema Integrado de Gestión</div>
+
+      <div class="kpi-grid" id="kpiGrid"></div>
+
+      <div class="panel" style="margin-bottom:16px">
+        <div class="panel-head">
+          <div class="panel-title"><span class="dot"></span> Mapa de ítems</div>
+          <div class="panel-sub">Cada cuadro es un ítem · punto oscuro = crítico · clic para abrirlo</div>
+        </div>
+        <div class="panel-body" id="heatmap"></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title"><span class="dot"></span> Proyección de cumplimiento</div>
+            <div class="panel-sub">Calculada en ítems cerrados</div>
+          </div>
+          <div class="panel-body" id="forecastBody"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title"><span class="dot" style="background:var(--rojo)"></span> ¿Por qué son bloqueadores?</div>
+            <div class="panel-sub">Motivos concretos</div>
+          </div>
+          <div class="panel-body" id="reasonsBody"></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title"><span class="dot" style="background:var(--rojo)"></span> Ruta crítica · Top prioridades</div>
+          </div>
+          <div class="panel-body" style="padding:0">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width:100px">Bloque</th>
+                  <th style="width:70px">Cláusula</th>
+                  <th>Acción</th>
+                  <th style="width:120px">Responsable</th>
+                </tr>
+              </thead>
+              <tbody id="criticalBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title"><span class="dot" style="background:var(--verde)"></span> Hitos previos</div>
+          </div>
+          <div class="panel-body">
+            <div class="milestone-list" id="milestoneList"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title"><span class="dot"></span> Cumplimiento por bloque</div>
+            <div class="panel-sub">Transversal + 5 normas</div>
+          </div>
+          <div class="panel-body" id="isoBars"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title"><span class="dot" style="background:var(--naranja)"></span> Próximas acciones</div>
+            <div class="panel-sub">Lo más urgente ahora</div>
+          </div>
+          <div class="panel-body" id="nextActionsBody"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EQUIPO -->
+    <section class="view" id="view-equipo">
+      <div class="section-title">Desempeño y carga del equipo</div>
+
+      <div class="panel" style="margin-bottom:16px">
+        <div class="panel-head">
+          <div class="panel-title"><span class="dot" style="background:var(--azul-claro)"></span> Distribución de carga del equipo</div>
+          <div class="panel-sub" id="loadSub"></div>
+        </div>
+        <div class="panel-body" id="loadBody"></div>
+      </div>
+
+      <div class="toolbar">
+        <div class="seg" id="ownerSortSeg">
+          <button class="active" data-sort="severity">Por severidad</button>
+          <button data-sort="progress">Por avance</button>
+          <button data-sort="load">Por carga</button>
+          <button data-sort="name">Por nombre</button>
+        </div>
+        <div class="seg" id="ownerViewSeg">
+          <button class="active" data-vista="cards">Tarjetas</button>
+          <button data-vista="tabla">Tabla</button>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn btn-primary btn-sm" id="btnAddOwner">+ Agregar responsable</button>
+        <span style="font-size:11px;color:var(--gris-text)" id="ownerCount"></span>
+      </div>
+      <div class="owner-grid" id="ownerCards"></div>
+      <div id="ownerTable" style="display:none"></div>
+    </section>
+
+    <!-- RUTA CRÍTICA -->
+    <section class="view" id="view-rutaCritica">
+      <div class="toolbar">
+        <div style="font-size:11px;color:var(--gris-text)">
+          Los ítems <strong style="color:var(--rojo)">críticos</strong> son los que, si no están conformes, ponen en riesgo la auditoría. Ordenados por peso (los más complejos primero).
+        </div>
+      </div>
+      <div id="criticalList"></div>
+    </section>
+
+    <!-- CHECKLIST -->
+    <section class="view" id="view-checklist">
+      <div class="toolbar">
+        <div class="seg" id="filterSeg">
+          <button class="active" data-std="all">Todos</button>
+          <button data-std="Transversal">Transversal</button>
+          <button data-std="ISO 9001">9001</button>
+          <button data-std="ISO 14001">14001</button>
+          <button data-std="ISO 45001">45001</button>
+          <button data-std="ISO 37001">37001</button>
+          <button data-std="ISO 50001">50001</button>
+        </div>
+        <div class="seg" id="statusSeg">
+          <button class="active" data-status="all">Todos</button>
+          <button data-status="no-iniciado">No iniciados</button>
+          <button data-status="proceso">En proceso</button>
+          <button data-status="observado">Observados</button>
+          <button data-status="critico">Solo críticos</button>
+        </div>
+        <select class="filter-select" id="ownerFilter">
+          <option value="all">Todos los responsables</option>
+        </select>
+        <div class="spacer"></div>
+        <div class="seg" id="viewModeSeg"><button data-mode="compact">Compacta</button><button data-mode="full">Detallada</button></div>
+        <button class="btn btn-sm" id="btnToggleAll">Expandir todo</button>
+        <span style="font-size:11px;color:var(--gris-text)" id="filterCount"></span>
+      </div>
+      <div id="checklist"></div>
+    </section>
+  </main>
+</div>
+
+<!-- MODAL GENERAL -->
+<div class="modal-backdrop" id="modal">
+  <div class="modal">
+    <div class="modal-head"><h2 id="modalTitle">Confirmar</h2></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot">
+      <button class="btn" id="modalCancel">Cancelar</button>
+      <button class="btn btn-primary" id="modalConfirm">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ASIGNACIÓN -->
+<div class="modal-backdrop" id="modalAssign">
+  <div class="modal" style="max-width: 880px;">
+    <div class="modal-head">
+      <h2 id="assignTitle">Asignar actividades</h2>
+      <button class="btn btn-sm" id="assignClose">✕</button>
+    </div>
+    <div class="modal-body" id="assignBody"></div>
+    <div class="modal-foot">
+      <button class="btn" id="assignCancel">Cancelar</button>
+      <button class="btn btn-primary" id="assignSave">Guardar asignación</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+/* ============================================================
+   CONFIGURACIÓN · Google Sheets (Apps Script)
+   ============================================================ */
+const API_URL = 'https://script.google.com/macros/s/AKfycbyaACtbzlAo38fMbFXZd0kKt_N6caOzh2YSwEqOSBS_l5-yVFS86KNaDoj09UYP6m8fcg/exec';
+const API_KEY = 'sig-auditoria-2026-x7k9m2';
+const SYNC_INTERVAL = 120000; // 2 minutos
+
+/* ============================================================
+   1. CONSTANTES Y CATÁLOGOS
+   ============================================================ */
+const COLORES = { "Transversal":"#3B599F", "ISO 9001":"#3B599F", "ISO 14001":"#6CAC5E", "ISO 45001":"#FBC13F", "ISO 37001":"#2C4276", "ISO 50001":"#4F8A42" };
+const BLOQUES = ["Transversal","ISO 9001","ISO 14001","ISO 45001","ISO 37001","ISO 50001"];
+const ESTADOS = {
+  "actualizado": { label:"Actualizado",        color:"#6CAC5E", pill:"actualizado" },
+  "vigente":     { label:"Vigente sin cambios",color:"#A8C89F", pill:"vigente" },
+  "proceso":     { label:"En proceso",         color:"#6FA8DC", pill:"proceso" },
+  "observado":   { label:"Observado",          color:"#C0392B", pill:"observado" },
+  "no-iniciado": { label:"No iniciado",        color:"#B8BEC9", pill:"no-iniciado" }
+};
+const AVATAR_COLORS = ['#3B599F','#6CAC5E','#FBC13F','#2C4276','#4F8A42','#C0392B','#E67E22','#9333EA','#0891B2','#DB2777'];
+const CERRADOS = ['actualizado','vigente'];
+const MIN_DIAS_HISTORIAL = 3;
+
+/* ============================================================
+   2. ESTADO GLOBAL
+   ============================================================ */
+let state = [];
+let auditData = [];
+let owners = cargarOwners();
+let auditDate = cargarFecha();
+let progressHistory = cargarHistorial();
+let currentUser = localStorage.getItem('sig_user_name') || '';
+
+/* Estado de sincronización */
+let syncState = 'idle'; // idle | saving | connected | error
+let lastSyncAt = null;
+let isSaving = false;
+
+/* ============================================================
+   3. PERSISTENCIA LOCAL (solo preferencias, no datos)
+   ============================================================ */
+const STORAGE_OWNERS = 'sig_audit_v12_owners';
+const STORAGE_DATE = 'sig_audit_v12_date';
+const STORAGE_HISTORY = 'sig_audit_v12_history';
+const STORAGE_COMPACT = 'sig_audit_v12_compact';
+
+function cargarOwners() {
+  try { const raw = localStorage.getItem(STORAGE_OWNERS); if (raw) return JSON.parse(raw); } catch(e) {}
+  const roles = ["Coordinador SIG","Responsable de Calidad","Responsable Ambiental","Responsable SST","Responsable Compliance","Responsable Energía"];
+  return ['Personal designado 1','Personal designado 2','Personal designado 3','Personal designado 4','Personal designado 5','Personal designado 6'].map((n, i) => ({
+    id: 'own_' + i, name: n, role: roles[i] || 'Responsable',
+    email: '', color: AVATAR_COLORS[i % AVATAR_COLORS.length]
+  }));
+}
+function guardarOwners() { try { localStorage.setItem(STORAGE_OWNERS, JSON.stringify(owners)); } catch(e) {} }
+
+function cargarFecha() {
+  try { const raw = localStorage.getItem(STORAGE_DATE); if (raw) return new Date(raw); } catch(e) {}
+  const d = new Date(); d.setDate(d.getDate() + 60); return d;
+}
+function guardarFecha() { try { localStorage.setItem(STORAGE_DATE, auditDate.toISOString()); } catch(e) {} }
+
+function cargarHistorial() {
+  try { const raw = localStorage.getItem(STORAGE_HISTORY); if (raw) return JSON.parse(raw); } catch(e) {}
+  return [];
+}
+function guardarHistorial() { try { localStorage.setItem(STORAGE_HISTORY, JSON.stringify(progressHistory)); } catch(e) {} }
+
+function registrarAvance() {
+  const total = state.length;
+  const prep = state.filter(s => CERRADOS.includes(s.status)).length;
+  const pct = total ? Math.round(prep / total * 100) : 0;
+  const hoy = new Date().toISOString().slice(0,10);
+  const ultimo = progressHistory[progressHistory.length - 1];
+  if (!ultimo || ultimo.date !== hoy) progressHistory.push({ date: hoy, pct });
+  else ultimo.pct = pct;
+  if (progressHistory.length > 30) progressHistory.shift();
+  guardarHistorial();
+}
+
+/* ============================================================
+   4. API · Google Sheets
+   ============================================================ */
+async function cargarState() {
+  const res = await fetch(`${API_URL}?action=getAll&key=${API_KEY}`);
+  const rows = await res.json();
+  if (rows.error) throw new Error(rows.error);
+  return rows;
+}
+
+async function guardarItem(id, campos) {
+  if (isSaving) return;
+  isSaving = true;
+  setSyncStatus('saving');
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify({ id, key: API_KEY, ...campos })
+    });
+    const data = await res.json();
+    if (data.result === 'error') throw new Error(data.message);
+    setSyncStatus('connected');
+    lastSyncAt = new Date();
+    setTimeout(() => { isSaving = false; }, 500);
+  } catch (err) {
+    console.error('Error al guardar:', err);
+    setSyncStatus('error');
+    isSaving = false;
+    showToast('Error al guardar. Reintentando…');
+  }
+}
+
+function setSyncStatus(status) {
+  syncState = status;
+  const el = document.getElementById('syncStatus');
+  const txt = document.getElementById('syncText');
+  if (!el || !txt) return;
+  el.className = 'sync-status ' + (status === 'connected' ? 'connected' : status === 'saving' ? 'saving' : status === 'error' ? 'error' : '');
+  txt.textContent = status === 'saving' ? 'Guardando…' :
+                    status === 'connected' ? 'Sincronizado' :
+                    status === 'error' ? 'Sin conexión' : 'Conectando…';
+}
+
+/* Convierte una fila del Sheet al formato interno */
+function parseRow(row) {
+  return {
+    id: parseInt(row.id),
+    std: row.std,
+    clause: row.clause,
+    q: row.q,
+    ev: row.ev,
+    status: row.status || null,
+    owner: row.owner || '',
+    due: row.due ? String(row.due).slice(0,10) : '',
+    remarks: row.remarks || '',
+    critical: row.critical === true || row.critical === 'true' || row.critical === 'TRUE',
+    weight: parseInt(row.weight) || 1
+  };
+}
+
+/* ============================================================
+   5. HELPERS
+   ============================================================ */
+function getOwnerByName(name) { return owners.find(o => o.name === name); }
+function initials(name) { return (name || '?').split(/\s+/).slice(0,2).map(w => w[0]).join('').toUpperCase(); }
+function avatarHTML(name, size = '') {
+  const o = getOwnerByName(name);
+  const color = o ? o.color : '#94A3B8';
+  return `<div class="avatar ${size}" style="background:${color}" title="${name || ''}">${initials(name)}</div>`;
+}
+function estadoDeItem(s) { return s.status || 'no-iniciado'; }
+function chipBloque(std) {
+  return `<span class="std-chip" data-std="${std}">${std === 'Transversal' ? 'Transversal' : std.replace('ISO ','')}</span>`;
+}
+function weightChip(w) {
+  const dots = '●'.repeat(w) + '○'.repeat(4 - w);
+  const cls = w === 1 ? 'p1' : w === 2 ? 'p2' : 'p4';
+  const label = w === 1 ? 'Simple' : w === 2 ? 'Compleja' : 'Crítica';
+  return `<span class="weight-chip ${cls}" title="Peso ${w} · ${label}"><span class="weight-dots">${dots}</span> P${w}</span>`;
+}
+function getDueStatus(idx) {
+  const s = state[idx];
+  if (!s.due) return null;
+  if (CERRADOS.includes(s.status)) return null;
+  const due = new Date(s.due + 'T23:59:59');
+  const diff = (due - new Date()) / 86400000;
+  if (diff < 0) return { level: 'vencido', label: `Vencido hace ${Math.ceil(Math.abs(diff))} d` };
+  if (diff <= 7) return { level: 'proximo', label: `Vence en ${Math.ceil(diff)} d` };
+  if (diff <= 15) return { level: 'info', label: `En ${Math.ceil(diff)} d` };
+  return null;
+}
+
+/* ============================================================
+   6. ESTADÍSTICAS
+   ============================================================ */
+function getItemsOfOwner(name) {
+  return state.map((s, i) => ({ s, item: auditData[i], idx: i })).filter(x => x.s.owner === name);
+}
+
+function computeOwnerStats(name) {
+  const items = getItemsOfOwner(name);
+  const total = items.length;
+  let actualizado = 0, vigente = 0, proceso = 0, observado = 0, noIniciado = 0;
+  let ptsTotal = 0;
+  items.forEach(x => {
+    const e = estadoDeItem(x.s);
+    const w = x.s.weight || 1;
+    ptsTotal += w;
+    if (e === 'actualizado') actualizado++;
+    else if (e === 'vigente') vigente++;
+    else if (e === 'proceso') proceso++;
+    else if (e === 'observado') observado++;
+    else noIniciado++;
+  });
+  const preparados = actualizado + vigente;
+  const pctAvance = total ? Math.round(preparados / total * 100) : 0;
+  const criticos = items.filter(x => x.s.critical).length;
+  const criticosOk = items.filter(x => x.s.critical && CERRADOS.includes(x.s.status)).length;
+  return { total, actualizado, vigente, proceso, observado, noIniciado, preparados, pctAvance, criticos, criticosOk, ptsTotal };
+}
+
+function computeReason(name) {
+  const s = computeOwnerStats(name);
+  if (s.total === 0) return { level:'ok', text:'Sin actividades asignadas', detail:'Aún no tiene ítems a su cargo' };
+  if (s.observado === 0 && s.noIniciado === 0 && s.proceso === 0) {
+    return { level:'ok', text:'Al día', detail:`${s.preparados} de ${s.total} ítems cerrados` };
+  }
+  if (s.observado > 0) return { level:'crit', text:`Tiene ${s.observado} ítem${s.observado>1?'s':''} observado${s.observado>1?'s':''}`, detail:`${s.noIniciado} sin iniciar · ${s.proceso} en proceso` };
+  if (s.pctAvance < 30) return { level:'crit', text:`Avance crítico (${s.pctAvance}%)`, detail:`${s.noIniciado} sin iniciar · ${s.proceso} en proceso` };
+  if (s.pctAvance < 60) return { level:'risk', text:`Avance bajo (${s.pctAvance}%)`, detail:`${s.noIniciado} sin iniciar · ${s.proceso} en proceso` };
+  if (s.noIniciado > 0 || s.proceso > 0) return { level:'warn', text:`Avance aceptable (${s.pctAvance}%) con pendientes`, detail:`${s.noIniciado} sin iniciar · ${s.proceso} en proceso` };
+  return { level:'ok', text:'Al día', detail:`${s.preparados} de ${s.total} ítems cerrados` };
+}
+
+function getTotalPuntosAsignados() {
+  return state.filter(s => s.owner).reduce((a, s) => a + (s.weight || 1), 0);
+}
+function getOwnerLoadPts(name) {
+  return getItemsOfOwner(name).reduce((a, x) => a + (x.s.weight || 1), 0);
+}
+function getOwnerLoadPct(name) {
+  const total = getTotalPuntosAsignados();
+  if (!total) return 0;
+  return Math.round(getOwnerLoadPts(name) / total * 100);
+}
+function getAvgLoad() {
+  const active = owners.filter(o => getItemsOfOwner(o.name).length > 0);
+  if (!active.length) return 0;
+  return 100 / active.length;
+}
+function getLoadLevel(pct) {
+  const avg = getAvgLoad();
+  if (!avg) return 'ok';
+  const r = pct / avg;
+  if (r < 0.6 || r > 1.5) return 'crit';
+  if (r < 0.8 || r > 1.2) return 'warn';
+  return 'ok';
+}
+function getLoadRatio(pct) {
+  const avg = getAvgLoad();
+  if (!avg) return 0;
+  return pct / avg;
+}
+/* ============================================================
+   7. NAVEGACIÓN
+   ============================================================ */
+let currentView = 'dashboard';
+let filterStd = 'all';
+let filterStatus = 'all';
+let filterOwner = 'all';
+let searchQuery = '';
+let ownerSort = 'severity';
+let ownerView = 'cards';
+let compactMode = true;
+let hmHl = null;
+const openItems = new Set();
+try { const v = localStorage.getItem(STORAGE_COMPACT); if (v !== null) compactMode = v === '1'; } catch(e) {}
+
+document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentView = btn.dataset.view;
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + currentView).classList.add('active');
+    const titles = {
+      dashboard: 'Cuadro de mando · Estado del SIG',
+      equipo: 'Equipo · Desempeño y carga',
+      rutaCritica: 'Ruta crítica · Ítems que no pueden fallar',
+      checklist: 'Checklist de verificación'
+    };
+    document.getElementById('topbarSub').textContent = titles[currentView];
+    renderAll();
+  });
+});
+
+document.querySelectorAll('.nav-item[data-filter]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentView = 'checklist';
+    filterStd = btn.dataset.filter;
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-checklist').classList.add('active');
+    document.querySelectorAll('#filterSeg button').forEach(b => b.classList.toggle('active', b.dataset.std === filterStd));
+    renderAll();
+  });
+});
+
+document.getElementById('ownerSortSeg').addEventListener('click', e => {
+  if (e.target.tagName !== 'BUTTON') return;
+  document.querySelectorAll('#ownerSortSeg button').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  ownerSort = e.target.dataset.sort;
+  renderEquipo();
+});
+document.getElementById('ownerViewSeg').addEventListener('click', e => {
+  if (e.target.tagName !== 'BUTTON') return;
+  document.querySelectorAll('#ownerViewSeg button').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  ownerView = e.target.dataset.vista;
+  renderEquipo();
+});
+
+/* ============================================================
+   8. COUNTDOWN Y PROYECCIÓN
+   ============================================================ */
+function getCountdown() {
+  const diff = auditDate - new Date();
+  if (diff <= 0) return { d:0, h:0, m:0, s:0, past:true };
+  return { d: Math.floor(diff/86400000), h: Math.floor((diff%86400000)/3600000), m: Math.floor((diff%3600000)/60000), s: Math.floor((diff%60000)/1000), past:false };
+}
+function updateCountdown() {
+  const c = getCountdown();
+  document.getElementById('cdD').textContent = c.d;
+  document.getElementById('cdH').textContent = String(c.h).padStart(2,'0');
+  document.getElementById('cdM').textContent = String(c.m).padStart(2,'0');
+  document.getElementById('cdS').textContent = String(c.s).padStart(2,'0');
+  document.getElementById('heroDate').textContent = auditDate.toLocaleDateString('es-ES', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  document.getElementById('sideDate').textContent = auditDate.toLocaleDateString('es-ES', { day:'2-digit', month:'short' });
+  const f = calcularProyeccion();
+  const statusEl = document.getElementById('heroStatus');
+  let label, cls;
+  if (c.past) { label = 'Auditoría en curso o pasada'; cls = 'crit'; }
+  else {
+    const dias = c.d;
+    if (f.pctActual === 100) { label = '✓ Todos los ítems cerrados'; cls = 'ok'; }
+    else if (f.pctFinal === null) {
+      if (dias <= 7) { label = `⚠ Últimos ${dias} días · faltan ${f.itemsPorResolver} ítems`; cls = 'risk'; }
+      else { label = `◔ Faltan ${f.itemsPorResolver} ítems · sin historial para proyectar`; cls = 'warn'; }
+    }
+    else if (f.pctFinal >= 95 && dias > 15) { label = '✓ Proyección: llegarás a tiempo'; cls = 'ok'; }
+    else if (f.pctFinal >= 80 && dias > 7) { label = '◐ Vas bien, revisa la ruta crítica'; cls = 'warn'; }
+    else if (dias <= 7 && f.pctFinal < 95) { label = `⚠ Últimos ${dias} días · Riesgo`; cls = 'risk'; }
+    else if (f.pctFinal >= 95) { label = '✓ Proyección: llegarás a tiempo'; cls = 'ok'; }
+    else { label = '⛔ No llegarás a tiempo · Acción urgente'; cls = 'crit'; }
+  }
+  statusEl.textContent = label;
+  statusEl.className = 'hero-status ' + cls;
+}
+
+function calcularProyeccion() {
+  const total = state.length;
+  const preparados = state.filter(s => CERRADOS.includes(s.status)).length;
+  const enProceso = state.filter(s => s.status === 'proceso').length;
+  const observados = state.filter(s => s.status === 'observado').length;
+  const noIniciados = state.filter(s => !s.status || s.status === 'no-iniciado').length;
+  const pctActual = total ? Math.round(preparados / total * 100) : 0;
+
+  let ritmo = null, diasHistorial = 0;
+  if (progressHistory.length >= 1) {
+    const first = progressHistory[0];
+    diasHistorial = (new Date() - new Date(first.date + 'T00:00:00')) / 86400000;
+    if (diasHistorial >= MIN_DIAS_HISTORIAL) ritmo = Math.max(0, ((pctActual - first.pct) / 100 * total) / diasHistorial);
+  }
+  const hasData = ritmo !== null;
+  const c = getCountdown();
+  const diasRestantes = Math.max(0, c.d + c.h / 24);
+  const itemsPorResolver = total - preparados;
+  const pctFinal = hasData ? Math.min(100, pctActual + (ritmo * diasRestantes / total) * 100) : null;
+  const itemsPorDiaNecesarios = diasRestantes > 0 ? (itemsPorResolver / diasRestantes) : itemsPorResolver;
+
+  return {
+    total, preparados, enProceso, observados, noIniciados, pctActual,
+    pctFinal: hasData ? Math.round(pctFinal) : null,
+    ritmo: hasData ? Math.round(ritmo * 10) / 10 : null,
+    hasData, diasHistorial: Math.max(0, Math.floor(diasHistorial)),
+    diasRestantes: Math.round(diasRestantes),
+    itemsPorResolver,
+    itemsPorDiaNecesarios: Math.round(itemsPorDiaNecesarios * 10) / 10
+  };
+}
+
+function renderForecast() {
+  const f = calcularProyeccion();
+  const c = getCountdown();
+  let verdict, vcls;
+  if (f.pctActual === 100) { verdict = '✓ Todos los ítems están cerrados.'; vcls = 'ok'; }
+  else if (c.past) { verdict = 'La fecha de auditoría ya pasó.'; vcls = 'crit'; }
+  else if (!f.hasData) { verdict = `◔ Aún no hay historial suficiente (hacen falta ${MIN_DIAS_HISTORIAL} días). Para cerrar todo necesitas <strong>${f.itemsPorDiaNecesarios} ítems/día</strong>.`; vcls = 'warn'; }
+  else if (f.pctFinal >= 95) { verdict = `✓ Con el ritmo actual (${f.ritmo} ítems/día) llegarás al <strong>${f.pctFinal}%</strong>.`; vcls = 'ok'; }
+  else if (f.pctFinal >= 80) { verdict = `◐ Llegarás al <strong>${f.pctFinal}%</strong>. Acelera en la ruta crítica.`; vcls = 'warn'; }
+  else if (f.pctFinal >= 50) { verdict = `⚠ Solo llegarás al <strong>${f.pctFinal}%</strong>. Necesitas <strong>${f.itemsPorDiaNecesarios} ítems/día</strong>.`; vcls = 'risk'; }
+  else { verdict = `⛔ Proyección crítica: <strong>${f.pctFinal}%</strong>. Necesitas <strong>${f.itemsPorDiaNecesarios} ítems/día</strong>.`; vcls = 'crit'; }
+
+  document.getElementById('forecastBody').innerHTML = `
+    <div class="forecast">
+      <div class="forecast-row"><span>Avance del SIG (ítems cerrados)</span><strong>${f.pctActual}%</strong></div>
+      <div class="forecast-row"><span>Ítems cerrados</span><strong>${f.preparados} / ${f.total}</strong></div>
+      <div class="forecast-row"><span>Observados</span><strong>${f.observados}</strong></div>
+      <div class="forecast-row"><span>No iniciados</span><strong>${f.noIniciados}</strong></div>
+      <div class="forecast-row"><span>Ritmo detectado</span><strong>${f.hasData ? f.ritmo + ' ítems/día' : 'Sin datos'}</strong></div>
+      <div class="forecast-row"><span>Días disponibles</span><strong>${f.diasRestantes} días</strong></div>
+      <div class="forecast-row"><span>Ritmo necesario</span><strong>${f.itemsPorDiaNecesarios} ítems/día</strong></div>
+      <div class="forecast-row"><span>Proyección al día de auditoría</span><strong>${f.hasData ? f.pctFinal + '%' : '—'}</strong></div>
+      <div class="forecast-note">En proceso: ${f.enProceso} ítems · No cuentan para el avance</div>
+    </div>
+    <div class="forecast-verdict ${vcls}">${verdict}</div>
+  `;
+}
+
+/* ============================================================
+   9. HITOS
+   ============================================================ */
+function renderMilestones() {
+  const dA = new Date(auditDate);
+  const hitos = [
+    { o:45, t:"Cierre de acciones correctivas", d:"NC internas cerradas" },
+    { o:30, t:"Pre-auditoría interna completa", d:"Auditoría interna del SIG" },
+    { o:21, t:"Documentación aprobada", d:"Procedimientos y registros firmados" },
+    { o:14, t:"Revisión por la dirección", d:"Acta firmada completa" },
+    { o:7,  t:"Simulacro de auditoría", d:"Repaso de evidencias" },
+    { o:3,  t:"Cierre de pendientes", d:"Checklist 100% preparado" },
+    { o:1,  t:"Briefing final", d:"Logística lista" }
+  ];
+  document.getElementById('milestoneList').innerHTML = hitos.map(h => {
+    const fecha = new Date(dA); fecha.setDate(fecha.getDate() - h.o);
+    const diff = (fecha - new Date()) / 86400000;
+    let cls, s;
+    if (diff < -3) { cls='crit'; s='VENCIDO'; }
+    else if (diff < 0) { cls='risk'; s='HOY'; }
+    else if (diff <= 5) { cls='warn'; s=`En ${Math.ceil(diff)} días`; }
+    else { cls='ok'; s=`En ${Math.ceil(diff)} días`; }
+    return `
+      <div class="milestone ${cls}">
+        <div class="milestone-date">${fecha.toLocaleDateString('es-ES',{day:'2-digit',month:'short'})}<small>${fecha.getFullYear()}</small></div>
+        <div><div class="milestone-title">${h.t}</div><div class="milestone-desc">${h.d}</div></div>
+        <div class="milestone-status ${cls}">${s}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ============================================================
+   10. RENDER PRINCIPAL
+   ============================================================ */
+function renderAll() {
+  updateCountdown();
+  renderKPIs();
+  renderForecast();
+  renderReasons();
+  renderCriticalTop();
+  renderMilestones();
+  renderISOBars();
+  renderNextActions();
+  renderLoadPanel();
+  renderEquipo();
+  renderCriticalList();
+  renderChecklist();
+  updateNavCounts();
+  updateOwnerFilterOptions();
+  renderHeatmap();
+}
+
+function renderKPIs() {
+  const total = state.length;
+  const preparados = state.filter(s => CERRADOS.includes(s.status)).length;
+  const pct = total ? Math.round(preparados / total * 100) : 0;
+  const criticalItems = state.filter(s => s.critical);
+  const criticalOk = criticalItems.filter(s => CERRADOS.includes(s.status)).length;
+  const pctCritico = criticalItems.length ? Math.round(criticalOk / criticalItems.length * 100) : 0;
+  const transItems = state.filter(s => s.std === 'Transversal');
+  const transOk = transItems.filter(s => CERRADOS.includes(s.status)).length;
+  const pctTrans = transItems.length ? Math.round(transOk / transItems.length * 100) : 0;
+
+  const kpis = [
+    { label:"Preparación global", value:pct, suffix:"%", color: pct >= 80 ? '#6CAC5E' : pct >= 50 ? '#FBC13F' : '#C0392B', sub:`${preparados} de ${total} ítems cerrados` },
+    { label:"Bloque transversal", value:pctTrans, suffix:"%", color: pctTrans >= 80 ? '#6CAC5E' : pctTrans >= 50 ? '#FBC13F' : '#C0392B', sub:`${transOk} de ${transItems.length} transversales` },
+    { label:"Ruta crítica lista", value:pctCritico, suffix:"%", color: pctCritico >= 80 ? '#6CAC5E' : pctCritico >= 50 ? '#FBC13F' : '#C0392B', sub:`${criticalOk} de ${criticalItems.length} críticos` }
+  ];
+
+  document.getElementById('kpiGrid').innerHTML = kpis.map(k => `
+    <div class="kpi" style="--kpi-color:${k.color}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value" style="color:${k.color}">${k.value}<small>${k.suffix}</small></div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>
+  `).join('');
+
+  updateRing();
+}
+
+function updateRing() {
+  const t = state.length;
+  const p = state.filter(s => CERRADOS.includes(s.status)).length;
+  const pct = t ? Math.round(p / t * 100) : 0;
+  const fg = document.getElementById('ringFg');
+  if (!fg) return;
+  fg.style.strokeDashoffset = 113.1 * (1 - pct / 100);
+  fg.style.stroke = pct >= 80 ? '#8FD17F' : pct >= 50 ? '#FBC13F' : '#FF8A7A';
+  document.getElementById('ringPct').textContent = pct + '%';
+}
+
+function renderHeatmap() {
+  const host = document.getElementById('heatmap'); if (!host) return;
+  const counts = {};
+  const rows = BLOQUES.map(std => {
+    const idxs = auditData.map((d, i) => d.std === std ? i : -1).filter(i => i >= 0);
+    const ok = idxs.filter(i => CERRADOS.includes(estadoDeItem(state[i]))).length;
+    const cells = idxs.map(i => {
+      const e = estadoDeItem(state[i]); counts[e] = (counts[e] || 0) + 1;
+      return `<button class="hm-cell ${state[i].critical ? 'crit' : ''} ${hmHl && hmHl !== e ? 'dim' : ''}" data-hm="${i}" style="background:${ESTADOS[e].color}" aria-label="${std} ${auditData[i].clause}: ${ESTADOS[e].label}"></button>`;
+    }).join('');
+    return `<div class="hm-row"><div class="hm-name"><span class="chip" style="background:${COLORES[std]}"></span>${std}</div><div class="hm-cells">${cells}</div><div class="hm-pct">${idxs.length ? Math.round(ok / idxs.length * 100) : 0}%</div></div>`;
+  }).join('');
+  const legend = Object.keys(ESTADOS).map(k => `<button class="hm-leg ${hmHl === k ? 'on' : ''}" data-hl="${k}"><span class="sw" style="background:${ESTADOS[k].color}"></span>${ESTADOS[k].label} <b>${counts[k] || 0}</b></button>`).join('');
+  host.innerHTML = `${rows}<div class="hm-detail" id="hmDetail">Pasa el cursor sobre un ítem para ver su detalle, o filtra por estado con la leyenda.</div><div class="hm-legend">${legend}</div>`;
+}
+
+function renderReasons() {
+  const list = owners.map(o => ({ o, r: computeReason(o.name) }))
+    .filter(x => x.r.level !== 'ok')
+    .sort((a,b) => ({crit:0,risk:1,warn:2,ok:3})[a.r.level] - ({crit:0,risk:1,warn:2,ok:3})[b.r.level]);
+
+  const container = document.getElementById('reasonsBody');
+  if (!list.length) {
+    container.innerHTML = `<div class="legend-box"><div class="legend-box-item"><span class="sw" style="background:var(--verde)"></span><div><strong>✓ Sin bloqueadores</strong>Todo el equipo está al día.</div></div></div>`;
+    return;
+  }
+
+  const legendHTML = `
+    <div class="legend-box" style="margin-bottom:12px">
+      <div class="legend-box-item"><span class="sw" style="background:var(--rojo)"></span><div><strong>Crítico</strong>Observados o avance &lt;30%</div></div>
+      <div class="legend-box-item"><span class="sw" style="background:var(--naranja)"></span><div><strong>Riesgo</strong>Avance &lt;60%</div></div>
+      <div class="legend-box-item"><span class="sw" style="background:var(--amarillo)"></span><div><strong>Atención</strong>Avance aceptable con pendientes</div></div>
+    </div>
+  `;
+  const listHTML = `<div class="reason-list">${list.map(({o, r}) => `
+    <div class="reason-item ${r.level}">
+      ${avatarHTML(o.name)}
+      <div class="reason-text"><strong>${o.name}</strong> — ${r.text}<small>${r.detail}</small></div>
+      <span class="reason-badge ${r.level}">${r.level === 'crit' ? 'Crítico' : r.level === 'risk' ? 'Riesgo' : 'Atención'}</span>
+    </div>
+  `).join('')}</div>`;
+  container.innerHTML = legendHTML + listHTML;
+}
+
+function renderCriticalTop() {
+  const crits = state.map((s, i) => ({...s, item: auditData[i]}))
+    .filter(s => s.critical && !CERRADOS.includes(s.status))
+    .sort((a, b) => (b.weight || 1) - (a.weight || 1))
+    .slice(0, 6);
+
+  const body = document.getElementById('criticalBody');
+  if (!crits.length) { body.innerHTML = `<tr><td colspan="4" class="empty" style="padding:30px">✓ Ruta crítica al día.</td></tr>`; return; }
+  body.innerHTML = crits.map(r => `
+    <tr>
+      <td>${chipBloque(r.item.std)}</td>
+      <td><strong>${r.item.clause}</strong></td>
+      <td>${r.item.q.length > 70 ? r.item.q.slice(0,70) + '…' : r.item.q}</td>
+      <td><div class="owner-cell">${avatarHTML(r.owner)}<span style="font-size:11px">${r.owner || '—'}</span></div></td>
+    </tr>
+  `).join('');
+}
+
+function renderISOBars() {
+  document.getElementById('isoBars').innerHTML = BLOQUES.map(std => {
+    const indices = auditData.map((d, i) => d.std === std ? i : -1).filter(i => i >= 0);
+    const total = indices.length;
+    const counts = { actualizado:0, vigente:0, proceso:0, observado:0, "no-iniciado":0 };
+    indices.forEach(i => { counts[estadoDeItem(state[i])]++; });
+    const pct = total ? Math.round((counts.actualizado + counts.vigente) / total * 100) : 0;
+    const segs = ['actualizado','vigente','proceso','observado','no-iniciado'].map(k => {
+      const w = total ? (counts[k] / total * 100) : 0;
+      if (w === 0) return '';
+      return `<div class="bar-seg ${k}" style="width:${w}%" title="${ESTADOS[k].label}: ${counts[k]}"></div>`;
+    }).join('');
+    return `
+      <div class="iso-row">
+        <div class="iso-name"><span class="chip" style="--chip:${COLORES[std]}"></span>${std}</div>
+        <div class="bar">${segs}</div>
+        <div class="iso-pct" style="color:${COLORES[std]}">${pct}%</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderNextActions() {
+  const actions = [];
+  const c = getCountdown();
+
+  const obs = state.filter(s => s.status === 'observado');
+  if (obs.length > 0) actions.push({ level:'crit', ico:'⚠', title:`${obs.length} ítem${obs.length>1?'s':''} observado${obs.length>1?'s':''}`, detail:'Requieren acción correctiva urgente', action:'checklist', filter:'observado' });
+
+  const vencidos = state.map((s, i) => ({s, i})).filter(x => {
+    if (!x.s.due) return false;
+    if (CERRADOS.includes(x.s.status)) return false;
+    return new Date(x.s.due + 'T23:59:59') < new Date();
+  });
+  if (vencidos.length > 0) actions.push({ level:'crit', ico:'⏰', title:`${vencidos.length} ítem${vencidos.length>1?'s':''} vencido${vencidos.length>1?'s':''}`, detail:'La fecha límite ya pasó', action:'checklist', filter:'all' });
+
+  const sinOwner = state.filter(s => !s.owner);
+  if (sinOwner.length > 0) actions.push({ level:'warn', ico:'👤', title:`${sinOwner.length} ítem${sinOwner.length>1?'s':''} sin responsable`, detail:'Asígnalos para poder hacer seguimiento', action:'checklist', filter:'all' });
+
+  const criticos = state.filter(s => s.critical);
+  const criticosOk = criticos.filter(s => CERRADOS.includes(s.status)).length;
+  const pctCrit = criticos.length ? Math.round(criticosOk / criticos.length * 100) : 0;
+  if (pctCrit < 60 && c.d <= 30 && !c.past) actions.push({ level:'risk', ico:'★', title:`Ruta crítica al ${pctCrit}%`, detail:`Quedan ${c.d} días y la ruta crítica no está lista`, action:'rutaCritica', filter:null });
+
+  const desbalanceados = owners.filter(o => {
+    const pct = getOwnerLoadPct(o.name);
+    return pct > 0 && getLoadLevel(pct) !== 'ok';
+  });
+  if (desbalanceados.length > 0) actions.push({ level:'warn', ico:'⚖', title:`${desbalanceados.length} responsable${desbalanceados.length>1?'s':''} con carga desbalanceada`, detail:'Revisa la distribución de actividades', action:'equipo', filter:null });
+
+  const noIniciados = state.filter(s => !s.status || s.status === 'no-iniciado');
+  if (noIniciados.length > 0 && c.d <= 21 && !c.past) actions.push({ level:'warn', ico:'📋', title:`${noIniciados.length} ítems no iniciados`, detail:`Quedan ${c.d} días para la auditoría`, action:'checklist', filter:'no-iniciado' });
+
+  const container = document.getElementById('nextActionsBody');
+  if (!actions.length) {
+    container.innerHTML = `<div class="legend-box"><div class="legend-box-item"><span class="sw" style="background:var(--verde)"></span><div><strong>✓ Sin acciones urgentes</strong>Todo va según lo previsto.</div></div></div>`;
+    return;
+  }
+
+  container.innerHTML = `<div class="actions-list">${actions.slice(0, 5).map(a => `
+    <div class="action-item ${a.level}">
+      <span class="ico-big">${a.ico}</span>
+      <div class="action-text"><strong>${a.title}</strong><small>${a.detail}</small></div>
+      <button class="btn btn-sm" data-action-go="${a.action}" data-action-filter="${a.filter || ''}">Ver →</button>
+    </div>
+  `).join('')}</div>`;
+
+  container.querySelectorAll('[data-action-go]').forEach(btn => {
+    btn.onclick = () => {
+      const target = btn.dataset.actionGo;
+      if (target === 'rutaCritica') document.querySelector('.nav-item[data-view="rutaCritica"]').click();
+      else if (target === 'equipo') document.querySelector('.nav-item[data-view="equipo"]').click();
+      else if (target === 'checklist') {
+        const filter = btn.dataset.actionFilter;
+        document.querySelector('.nav-item[data-view="checklist"]').click();
+        if (filter) {
+          setTimeout(() => {
+            document.querySelectorAll('#statusSeg button').forEach(b => b.classList.toggle('active', b.dataset.status === filter));
+            filterStatus = filter;
+            renderChecklist();
+          }, 50);
+        }
+      }
+    };
+  });
+}
+
+function renderLoadPanel() {
+  const container = document.getElementById('loadBody');
+  const subEl = document.getElementById('loadSub');
+  const puntosAsignados = getTotalPuntosAsignados();
+  const puntosTotales = state.reduce((a, s) => a + (s.weight || 1), 0);
+  const puntosSinAsignar = puntosTotales - puntosAsignados;
+  const avg = getAvgLoad();
+
+  const list = owners.map(o => ({ o, pct: getOwnerLoadPct(o.name), pts: getOwnerLoadPts(o.name), items: getItemsOfOwner(o.name).length }))
+    .filter(x => x.items > 0).sort((a,b) => b.pct - a.pct);
+
+  if (!list.length) { container.innerHTML = `<div class="empty" style="padding:16px">Sin actividades asignadas aún</div>`; subEl.textContent = ''; return; }
+  subEl.textContent = `${list.length} responsables · promedio ${Math.round(avg)}%`;
+
+  const warnHTML = puntosSinAsignar > 0
+    ? `<div class="load-warning">⚠ ${puntosSinAsignar} puntos sin responsable</div>` : '';
+
+  const rowsHTML = list.map(({o, pct, pts, items}) => {
+    const level = getLoadLevel(pct);
+    const r = getLoadRatio(pct);
+    const barColor = level === 'crit' ? 'var(--rojo)' : level === 'warn' ? 'var(--naranja)' : 'var(--verde)';
+    return `
+      <div class="load-row">
+        <div class="load-name">${avatarHTML(o.name)}<span title="${o.name}">${o.name}</span></div>
+        <div class="load-bar">
+          <div class="load-bar-fill" style="width:${pct}%;background:${barColor}"></div>
+          <div class="load-bar-avg" title="Promedio ideal"></div>
+        </div>
+        <div class="load-meta">
+          <strong>${pct}%</strong> · ${pts} puntos (${items} ítems)
+          <span class="ratio ${level}">${r.toFixed(1)}× promedio</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const desbalanceados = list.filter(x => getLoadLevel(x.pct) !== 'ok').length;
+  const verdictHTML = desbalanceados === 0
+    ? `<div style="font-size:11px;color:var(--verde-dark);margin-top:10px;font-weight:bold">✓ Carga balanceada</div>`
+    : `<div style="font-size:11px;color:#A1500F;margin-top:10px;font-weight:bold">⚠ ${desbalanceados} responsable${desbalanceados>1?'s':''} fuera del rango ideal</div>`;
+
+  container.innerHTML = warnHTML + rowsHTML + verdictHTML;
+}
+
+function renderEquipo() {
+  const enriched = owners.map(o => ({ o, s: computeOwnerStats(o.name), r: computeReason(o.name), load: getOwnerLoadPct(o.name) }));
+  const sevOrder = { crit:0, risk:1, warn:2, ok:3 };
+  if (ownerSort === 'severity') enriched.sort((a,b) => sevOrder[a.r.level] - sevOrder[b.r.level] || a.s.pctAvance - b.s.pctAvance);
+  else if (ownerSort === 'progress') enriched.sort((a,b) => a.s.pctAvance - b.s.pctAvance);
+  else if (ownerSort === 'load') enriched.sort((a,b) => b.load - a.load);
+  else enriched.sort((a,b) => a.o.name.localeCompare(b.o.name));
+
+  document.getElementById('ownerCount').textContent = `${owners.length} responsables`;
+  const cards = document.getElementById('ownerCards');
+  const table = document.getElementById('ownerTable');
+
+  if (!enriched.length) {
+    cards.innerHTML = `<div class="empty"><div class="big">👥</div>Sin responsables registrados.</div>`;
+    table.innerHTML = '';
+    return;
+  }
+  cards.style.display = ownerView === 'cards' ? 'grid' : 'none';
+  table.style.display = ownerView === 'tabla' ? 'block' : 'none';
+
+  cards.innerHTML = enriched.map(({o, s, r, load}) => {
+    const nivel = r.level === 'crit' ? 'nivel-crit' : r.level === 'risk' ? 'nivel-risk' : r.level === 'warn' ? 'nivel-warn' : 'nivel-ok';
+    const pctColor = s.pctAvance >= 80 ? 'var(--verde)' : s.pctAvance >= 50 ? 'var(--amarillo)' : 'var(--rojo)';
+    return `
+      <div class="owner-card ${nivel}">
+        <div class="owner-card-head">
+          ${avatarHTML(o.name, 'lg')}
+          <div class="owner-info">
+            <div class="owner-name">${o.name}</div>
+            <div class="owner-role">${o.role || 'Responsable'}</div>
+          </div>
+          <div class="owner-badges">
+            <div class="owner-load-badge"><span class="lbl">Carga</span>${load}%</div>
+          </div>
+        </div>
+        <div class="owner-card-body">
+          <div class="zone">
+            <div class="zone-label">Desempeño <span class="zone-hint">Avance por ítems cerrados</span></div>
+            <div style="font-size:14px;font-weight:bold;color:${pctColor};margin-bottom:4px">${s.pctAvance}% · ${s.preparados}/${s.total} ítems</div>
+            <div class="owner-progress"><div class="owner-progress-fill" style="width:${s.pctAvance}%;background:${pctColor}"></div></div>
+          </div>
+          <div class="zone">
+            <div class="zone-label">Estados del checklist</div>
+            <div class="owner-metrics-line">
+              <span class="ok"><strong>${s.actualizado}</strong> Act</span>
+              <span class="ok"><strong>${s.vigente}</strong> Vig</span>
+              <span class="proc"><strong>${s.proceso}</strong> Proc</span>
+              <span class="obs"><strong>${s.observado}</strong> Obs</span>
+              <span><strong>${s.noIniciado}</strong> S/I</span>
+            </div>
+          </div>
+          <div class="zone">
+            <div class="zone-label">Carga <span class="zone-hint">Por peso de las actividades</span></div>
+            <div style="font-size:11px;color:var(--gris-text)"><strong style="color:var(--azul)">${s.ptsTotal} puntos</strong> · <strong style="color:var(--azul)">${load}%</strong> del equipo</div>
+          </div>
+          <div class="owner-reason ${r.level}" style="margin-top:10px">
+            ${r.text}
+            <small>${r.detail}</small>
+          </div>
+          <div class="owner-actions">
+            <button data-owner-view="${o.name}">Ver ítems</button>
+            <button data-owner-assign="${o.name}">Asignar</button>
+            <button class="icon-only" data-owner-edit="${o.id}" title="Editar">✎</button>
+            <button class="icon-only" data-owner-delete="${o.id}" title="Eliminar">✕</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  table.innerHTML = `
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title"><span class="dot"></span> Listado maestro de miembros</div>
+        <div class="panel-sub">${enriched.length} personas</div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width:200px">Miembro</th>
+              <th style="width:130px">Rol</th>
+              <th style="width:70px">Carga</th>
+              <th style="width:70px">Pts</th>
+              <th style="width:60px">Act</th>
+              <th style="width:60px">Vig</th>
+              <th style="width:60px">Proc</th>
+              <th style="width:60px">Obs</th>
+              <th style="width:60px">S/I</th>
+              <th style="width:80px">Avance</th>
+              <th>Motivo</th>
+              <th style="width:180px">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${enriched.map(({o, s, r, load}) => {
+              const pctColor = s.pctAvance >= 80 ? 'var(--verde-dark)' : s.pctAvance >= 50 ? '#9C7815' : 'var(--rojo)';
+              return `
+                <tr>
+                  <td><div class="owner-cell">${avatarHTML(o.name)}<strong>${o.name}</strong></div></td>
+                  <td style="color:var(--gris-text);font-size:11px">${o.role || '—'}</td>
+                  <td><span style="font-weight:bold;color:var(--azul)">${load}%</span></td>
+                  <td><span style="font-weight:bold;color:var(--azul)">${s.ptsTotal}</span></td>
+                  <td><span style="color:var(--verde-dark);font-weight:bold">${s.actualizado}</span></td>
+                  <td><span style="color:var(--verde-dark);font-weight:bold">${s.vigente}</span></td>
+                  <td><span style="color:#2C6CA1;font-weight:bold">${s.proceso}</span></td>
+                  <td><span style="color:var(--rojo);font-weight:bold">${s.observado}</span></td>
+                  <td><span style="color:var(--gris-text);font-weight:bold">${s.noIniciado}</span></td>
+                  <td><span style="color:${pctColor};font-weight:bold;font-size:13px">${s.pctAvance}%</span></td>
+                  <td><span class="reason-badge ${r.level}">${r.text}</span></td>
+                  <td>
+                    <div style="display:flex;gap:4px;flex-wrap:wrap">
+                      <button class="btn btn-sm" data-owner-assign="${o.name}">Asignar</button>
+                      <button class="btn btn-sm" data-owner-view="${o.name}">Ver</button>
+                      <button class="btn btn-sm" data-owner-edit="${o.id}">Editar</button>
+                    </div>
+                  </td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  bindOwnerActions();
+}
+
+function bindOwnerActions() {
+  document.querySelectorAll('[data-owner-view]').forEach(btn => {
+    btn.onclick = () => {
+      filterOwner = btn.dataset.ownerView;
+      filterStd = 'all'; filterStatus = 'all';
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById('view-checklist').classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      document.querySelector('.nav-item[data-view="checklist"]').classList.add('active');
+      document.querySelectorAll('#filterSeg button').forEach(b => b.classList.toggle('active', b.dataset.std === 'all'));
+      document.querySelectorAll('#statusSeg button').forEach(b => b.classList.toggle('active', b.dataset.status === 'all'));
+      document.getElementById('ownerFilter').value = owners.some(o => o.name === filterOwner) ? filterOwner : 'all';
+      currentView = 'checklist';
+      renderChecklist();
+      showToast(`Filtrando ítems de ${filterOwner}`);
+    };
+  });
+  document.querySelectorAll('[data-owner-edit]').forEach(btn => btn.onclick = () => editOwner(btn.dataset.ownerEdit));
+  document.querySelectorAll('[data-owner-delete]').forEach(btn => btn.onclick = () => deleteOwner(btn.dataset.ownerDelete));
+  document.querySelectorAll('[data-owner-assign]').forEach(btn => btn.onclick = () => openAssignModal(btn.dataset.ownerAssign));
+}
+
+function renderCriticalList() {
+  const crits = state.map((s, i) => ({...s, item: auditData[i], idx:i})).filter(s => s.critical).sort((a, b) => (b.weight || 1) - (a.weight || 1));
+  if (!crits.length) {
+    document.getElementById('criticalList').innerHTML = `<div class="empty"><div class="big">★</div>No hay ítems críticos.</div>`;
+    return;
+  }
+  document.getElementById('criticalList').innerHTML = crits.map(d => renderItem(d.idx, d.item, d, 'crit')).join('');
+}
+
+function renderItem(idx, item, s, prefix = 'st') {
+  const e = estadoDeItem(s);
+  const opts = ['actualizado','vigente','proceso','observado','no-iniciado'];
+  const ownerOptions = owners.map(o => `<option value="${o.name}" ${s.owner === o.name ? 'selected' : ''}>${o.name}</option>`).join('');
+  const due = getDueStatus(idx);
+  const w = s.weight || 1;
+
+  return `
+    <div class="item ${s.critical ? 'is-critical' : ''}" data-std="${item.std}">
+      <div class="item-badges">${due ? `<span class="due-badge ${due.level}">${due.label}</span>` : ''}</div>
+      <div class="item-head">
+        ${chipBloque(item.std)}
+        <span class="item-clause">${item.clause}</span>
+        <span class="pill ${ESTADOS[e].pill}">${ESTADOS[e].label}</span>
+        ${weightChip(w)}
+      </div>
+      <div class="item-q">${item.q}</div>
+      <div class="item-ev"><strong>Evidencia esperada:</strong> ${item.ev}</div>
+      <div class="status-group">
+        ${opts.map(o => `
+          <label class="status-opt ${e === o ? 'selected' : ''}" data-val="${o}">
+            <input type="radio" name="${prefix}-${idx}" value="${o}" ${e === o ? 'checked' : ''}>
+            <span class="dot"></span>${ESTADOS[o].label}
+          </label>
+        `).join('')}
+      </div>
+      <div class="item-meta">
+        <select data-idx="${idx}" data-field="owner">
+          <option value="">Sin asignar</option>
+          ${ownerOptions}
+        </select>
+        <select class="weight-select" data-idx="${idx}" data-field="weight">
+          <option value="1" ${w === 1 ? 'selected' : ''}>Peso 1 · Simple</option>
+          <option value="2" ${w === 2 ? 'selected' : ''}>Peso 2 · Compleja</option>
+          <option value="4" ${w === 4 ? 'selected' : ''}>Peso 4 · Crítica</option>
+        </select>
+        <input type="date" value="${s.due || ''}" data-idx="${idx}" data-field="due">
+        <input type="text" placeholder="Observaciones / evidencia encontrada" value="${(s.remarks || '').replace(/"/g,'&quot;')}" data-idx="${idx}" data-field="remarks">
+        <span></span>
+      </div>
+      <div class="item-actions">
+        <button data-action="clear" data-idx="${idx}">Limpiar estado</button>
+        <label class="critical-toggle">
+          <input type="checkbox" data-critical="${idx}" ${s.critical ? 'checked' : ''}>
+          Marcar como crítico
+        </label>
+      </div>
+    </div>
+  `;
+}
+
+function renderChecklist() {
+  const items = auditData
+    .map((d, i) => ({...d, idx:i, s:state[i]}))
+    .filter(d => filterStd === 'all' || d.std === filterStd)
+    .filter(d => filterOwner === 'all' || d.s.owner === filterOwner)
+    .filter(d => {
+      if (filterStatus === 'all') return true;
+      if (filterStatus === 'critico') return d.s.critical;
+      return estadoDeItem(d.s) === filterStatus;
+    })
+    .filter(d => {
+      if (!searchQuery) return true;
+      const q = searchQuery.toLowerCase();
+      return d.q.toLowerCase().includes(q) || d.clause.toLowerCase().includes(q) || d.std.toLowerCase().includes(q) || (d.s.owner || '').toLowerCase().includes(q);
+    });
+
+  document.getElementById('filterCount').textContent = `${items.length} ítems`;
+  const container = document.getElementById('checklist');
+  if (!items.length) {
+    container.innerHTML = `<div class="empty"><div class="big">◌</div>No hay ítems que coincidan.</div>`;
+    return;
+  }
+  container.innerHTML = items.map(d => renderItem(d.idx, d, d.s, 'st')).join('');
+  applyChecklistUI();
+}
+
+function applyChecklistUI() {
+  const c = document.getElementById('checklist');
+  if (!c) return;
+  c.classList.toggle('compact', compactMode);
+  c.querySelectorAll('.item').forEach(el => { const s = el.querySelector('[data-field="owner"]'); if (s) el.classList.toggle('open', openItems.has(+s.dataset.idx)); });
+  document.querySelectorAll('#viewModeSeg button').forEach(b => b.classList.toggle('active', (b.dataset.mode === 'compact') === compactMode));
+  const btn = document.getElementById('btnToggleAll'), vis = [...c.querySelectorAll('.item')];
+  btn.style.display = compactMode ? '' : 'none';
+  btn.textContent = vis.length && vis.every(el => el.classList.contains('open')) ? 'Contraer todo' : 'Expandir todo';
+}
+
+function updateNavCounts() {
+  document.getElementById('navCount').textContent = state.length;
+  document.getElementById('navCrit').textContent = state.filter(s => s.critical).length;
+  document.getElementById('navOwners').textContent = owners.length;
+  document.querySelectorAll('.nav-item[data-filter]').forEach(btn => {
+    const std = btn.dataset.filter;
+    const indices = auditData.map((d, i) => d.std === std ? i : -1).filter(i => i >= 0);
+    const prep = indices.filter(i => CERRADOS.includes(state[i].status)).length;
+    const pct = indices.length ? Math.round(prep / indices.length * 100) : 0;
+    btn.querySelector('.count').textContent = pct + '%';
+  });
+}
+
+function updateOwnerFilterOptions() {
+  const sel = document.getElementById('ownerFilter');
+  const current = sel.value;
+  sel.innerHTML = `<option value="all">Todos los responsables</option>` + owners.map(o => `<option value="${o.name}">${o.name}</option>`).join('');
+  sel.value = owners.some(o => o.name === current) ? current : 'all';
+}
+/* ============================================================
+   11. EVENTOS DE ITEMS
+   ============================================================ */
+['view-checklist','view-rutaCritica'].forEach(vid => {
+  const v = document.getElementById(vid);
+  v.addEventListener('change', handleChange);
+  v.addEventListener('input', handleInput);
+  v.addEventListener('click', handleClick);
+});
+
+async function handleChange(e) {
+  if (e.target.type === 'radio') {
+    const m = e.target.name.match(/^(st|crit)-(\d+)$/);
+    if (!m) return;
+    const idx = parseInt(m[2]);
+    state[idx].status = e.target.value;
+    await guardarItem(state[idx].id, { status: e.target.value });
+    registrarAvance();
+    renderAll();
+    return;
+  }
+  if (e.target.dataset.critical !== undefined) {
+    const idx = parseInt(e.target.dataset.critical);
+    state[idx].critical = e.target.checked;
+    await guardarItem(state[idx].id, { critical: e.target.checked });
+    renderAll();
+    showToast(e.target.checked ? 'Marcado como crítico' : 'Ya no es crítico');
+    return;
+  }
+  if (e.target.tagName === 'SELECT' && e.target.dataset.field === 'owner') {
+    const idx = parseInt(e.target.dataset.idx);
+    const nuevo = e.target.value;
+    state[idx].owner = nuevo;
+    await guardarItem(state[idx].id, { owner: nuevo });
+    renderAll();
+    showToast(nuevo ? `Asignado a ${nuevo}` : 'Sin asignar');
+    return;
+  }
+  if (e.target.tagName === 'SELECT' && e.target.dataset.field === 'weight') {
+    const idx = parseInt(e.target.dataset.idx);
+    const w = parseInt(e.target.value);
+    state[idx].weight = w;
+    await guardarItem(state[idx].id, { weight: w });
+    renderAll();
+    showToast(`Peso actualizado a ${w}`);
+    return;
+  }
+}
+
+function handleInput(e) {
+  const idx = e.target.dataset.idx;
+  const field = e.target.dataset.field;
+  if (idx === undefined || !field || field === 'owner' || field === 'weight') return;
+  state[parseInt(idx)][field] = e.target.value;
+  clearTimeout(window._inputTimer);
+  window._inputTimer = setTimeout(async () => {
+    await guardarItem(state[parseInt(idx)].id, { [field]: e.target.value });
+    if (field === 'due') { renderChecklist(); renderCriticalList(); }
+  }, 800);
+}
+
+async function handleClick(e) {
+  const btn = e.target.closest('button[data-action="clear"]');
+  if (!btn) return;
+  const idx = parseInt(btn.dataset.idx);
+  state[idx].status = null;
+  await guardarItem(state[idx].id, { status: '' });
+  renderAll();
+  showToast('Estado limpiado');
+}
+
+/* Filtros del checklist */
+document.getElementById('filterSeg').addEventListener('click', e => {
+  if (e.target.tagName !== 'BUTTON') return;
+  document.querySelectorAll('#filterSeg button').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  filterStd = e.target.dataset.std;
+  renderChecklist();
+});
+document.getElementById('statusSeg').addEventListener('click', e => {
+  if (e.target.tagName !== 'BUTTON') return;
+  document.querySelectorAll('#statusSeg button').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  filterStatus = e.target.dataset.status;
+  renderChecklist();
+});
+document.getElementById('ownerFilter').addEventListener('change', e => {
+  filterOwner = e.target.value;
+  renderChecklist();
+});
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchQuery = e.target.value;
+  if (currentView !== 'checklist') {
+    currentView = 'checklist';
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-checklist').classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    document.querySelector('.nav-item[data-view="checklist"]').classList.add('active');
+  }
+  renderChecklist();
+});
+
+/* Compacto / expandido */
+document.getElementById('checklist').addEventListener('click', e => {
+  if (!compactMode) return;
+  const h = e.target.closest('.item-head, .item-q'); if (!h) return;
+  const el = h.closest('.item'), i = +el.querySelector('[data-field="owner"]').dataset.idx;
+  openItems.has(i) ? openItems.delete(i) : openItems.add(i);
+  applyChecklistUI();
+});
+document.getElementById('viewModeSeg').addEventListener('click', e => {
+  if (e.target.tagName !== 'BUTTON') return;
+  compactMode = e.target.dataset.mode === 'compact';
+  try { localStorage.setItem(STORAGE_COMPACT, compactMode ? '1' : '0'); } catch(err) {}
+  applyChecklistUI();
+});
+document.getElementById('btnToggleAll').addEventListener('click', () => {
+  const items = [...document.querySelectorAll('#checklist .item')].map(el => +el.querySelector('[data-field="owner"]').dataset.idx);
+  const allOpen = items.every(i => openItems.has(i));
+  items.forEach(i => allOpen ? openItems.delete(i) : openItems.add(i));
+  applyChecklistUI();
+});
+
+/* Heatmap */
+const hmEl = document.getElementById('heatmap');
+hmEl.addEventListener('mouseover', e => {
+  const c = e.target.closest('[data-hm]'); if (!c) return;
+  const i = +c.dataset.hm;
+  const d = auditData[i], s = state[i];
+  const detail = document.getElementById('hmDetail');
+  if (detail) detail.innerHTML = `<strong>${d.std} · ${d.clause}</strong> — ${d.q}<br><span style="color:var(--gris-text)">${ESTADOS[estadoDeItem(s)].label} · ${s.owner || 'Sin asignar'}${s.critical ? ' · Crítico' : ''}</span>`;
+});
+hmEl.addEventListener('click', e => {
+  const c = e.target.closest('[data-hm]'); if (c) return goToItem(+c.dataset.hm);
+  const l = e.target.closest('[data-hl]'); if (l) { hmHl = hmHl === l.dataset.hl ? null : l.dataset.hl; renderHeatmap(); }
+});
+
+/* Drill-down desde KPIs y barras */
+document.getElementById('kpiGrid').addEventListener('click', e => {
+  const k = e.target.closest('.kpi'); if (!k) return;
+  const i = [...k.parentNode.children].indexOf(k);
+  if (i === 2) document.querySelector('.nav-item[data-view="rutaCritica"]').click();
+  else openChecklist({ std: i === 1 ? 'Transversal' : 'all' });
+});
+document.getElementById('isoBars').addEventListener('click', e => {
+  const r = e.target.closest('.iso-row'); if (!r) return;
+  openChecklist({ std: BLOQUES[[...r.parentNode.children].indexOf(r)] });
+});
+document.getElementById('reasonsBody').addEventListener('click', e => {
+  const r = e.target.closest('.reason-item'); if (r) openChecklist({ owner: r.querySelector('strong').textContent });
+});
+document.getElementById('criticalBody').addEventListener('click', e => {
+  const tr = e.target.closest('tr'); if (!tr || !tr.cells[1]) return;
+  const t = tr.cells[0].textContent.trim(), std = t === 'Transversal' ? t : 'ISO ' + t, cl = tr.cells[1].textContent.trim();
+  const i = auditData.findIndex(d => d.std === std && d.clause === cl);
+  if (i >= 0) goToItem(i);
+});
+
+function openChecklist({ std = 'all', status = 'all', owner = 'all', q = '' } = {}) {
+  filterStd = std; filterStatus = status; searchQuery = q; filterOwner = owner;
+  document.getElementById('searchInput').value = q;
+  const sel = document.getElementById('ownerFilter');
+  sel.value = owners.some(o => o.name === owner) ? owner : 'all';
+  document.querySelectorAll('#filterSeg button').forEach(b => b.classList.toggle('active', b.dataset.std === std));
+  document.querySelectorAll('#statusSeg button').forEach(b => b.classList.toggle('active', b.dataset.status === status));
+  document.querySelector('.nav-item[data-view="checklist"]').click();
+}
+function goToItem(idx) {
+  openChecklist();
+  openItems.add(idx); applyChecklistUI();
+  const sel = document.querySelector(`#checklist [data-field="owner"][data-idx="${idx}"]`);
+  const el = sel && sel.closest('.item'); if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1600);
+  }, 100);
+}
+
+/* ============================================================
+   12. MODAL ASIGNACIÓN
+   ============================================================ */
+let assignTargetOwner = null;
+let assignTemp = {};
+
+function openAssignModal(ownerName) {
+  assignTargetOwner = ownerName;
+  assignTemp = {};
+  state.forEach((s, i) => { assignTemp[i] = s.owner === ownerName; });
+  document.getElementById('assignTitle').textContent = `Asignar actividades a ${ownerName}`;
+  const yaAsignadas = state.filter(s => s.owner === ownerName).length;
+
+  document.getElementById('assignBody').innerHTML = `
+    <div class="assign-actions">
+      <span class="count" id="assignCount">${yaAsignadas} actividades asignadas</span>
+      <button class="btn btn-sm" id="assignAll">Todos</button>
+      <button class="btn btn-sm" id="assignNone">Ninguno</button>
+      <button class="btn btn-sm" id="assignPendientes">No iniciados</button>
+      <button class="btn btn-sm" id="assignCriticos">Críticos</button>
+    </div>
+    <div class="assign-filters">
+      <select class="filter-select" id="assignFilterStd">
+        <option value="all">Todos los bloques</option>
+        <option value="Transversal">Transversal SIG</option>
+        <option value="ISO 9001">ISO 9001</option>
+        <option value="ISO 14001">ISO 14001</option>
+        <option value="ISO 45001">ISO 45001</option>
+        <option value="ISO 37001">ISO 37001</option>
+        <option value="ISO 50001">ISO 50001</option>
+      </select>
+      <input type="text" class="search" id="assignSearch" placeholder="Buscar..." style="flex:1;max-width:280px">
+    </div>
+    <div class="assign-list" id="assignList"></div>
+  `;
+  renderAssignList();
+
+  document.getElementById('assignAll').onclick = () => {
+    document.querySelectorAll('#assignList input[type="checkbox"]').forEach(cb => { cb.checked = true; assignTemp[cb.dataset.idx] = true; });
+    updateAssignCount();
+  };
+  document.getElementById('assignNone').onclick = () => {
+    document.querySelectorAll('#assignList input[type="checkbox"]').forEach(cb => { cb.checked = false; assignTemp[cb.dataset.idx] = false; });
+    updateAssignCount();
+  };
+  document.getElementById('assignPendientes').onclick = () => {
+    document.querySelectorAll('#assignList input[type="checkbox"]').forEach(cb => {
+      const i = parseInt(cb.dataset.idx); const v = !state[i].status || state[i].status === 'no-iniciado';
+      cb.checked = v; assignTemp[i] = v;
+    });
+    updateAssignCount();
+  };
+  document.getElementById('assignCriticos').onclick = () => {
+    document.querySelectorAll('#assignList input[type="checkbox"]').forEach(cb => {
+      const i = parseInt(cb.dataset.idx); const v = state[i].critical;
+      cb.checked = v; assignTemp[i] = v;
+    });
+    updateAssignCount();
+  };
+  document.getElementById('assignFilterStd').onchange = renderAssignList;
+  document.getElementById('assignSearch').oninput = renderAssignList;
+  document.getElementById('modalAssign').classList.add('show');
+}
+
+function renderAssignList() {
+  const stdF = document.getElementById('assignFilterStd')?.value || 'all';
+  const q = (document.getElementById('assignSearch')?.value || '').toLowerCase();
+  const items = auditData.map((d, i) => ({...d, idx:i}))
+    .filter(d => stdF === 'all' || d.std === stdF)
+    .filter(d => !q || d.q.toLowerCase().includes(q) || d.clause.toLowerCase().includes(q) || d.std.toLowerCase().includes(q));
+
+  document.getElementById('assignList').innerHTML = items.map(d => {
+    const isAssignedNow = state[d.idx].owner === assignTargetOwner;
+    const otherOwner = state[d.idx].owner && state[d.idx].owner !== assignTargetOwner ? state[d.idx].owner : null;
+    return `
+      <label class="assign-row ${isAssignedNow ? 'assigned' : ''}">
+        <input type="checkbox" data-idx="${d.idx}" ${assignTemp[d.idx] ? 'checked' : ''}>
+        <div class="assign-info">
+          <div class="assign-head">
+            ${chipBloque(d.std)}
+            <span style="font-size:11px;font-weight:bold;background:var(--azul-soft);padding:2px 8px;border-radius:4px">${d.clause}</span>
+            ${state[d.idx].critical ? `<span style="font-size:10px;font-weight:bold;background:var(--rojo);color:white;padding:2px 6px;border-radius:4px">CRÍTICO</span>` : ''}
+            ${weightChip(state[d.idx].weight || 1)}
+            ${otherOwner ? `<span style="font-size:10px;color:var(--gris-text)">Actual: ${otherOwner}</span>` : ''}
+          </div>
+          <div class="assign-q">${d.q}</div>
+          <div class="assign-ev">Evidencia: ${d.ev}</div>
+        </div>
+      </label>
+    `;
+  }).join('');
+
+  document.querySelectorAll('#assignList input[type="checkbox"]').forEach(cb => {
+    cb.onchange = () => { assignTemp[cb.dataset.idx] = cb.checked; updateAssignCount(); };
+  });
+  updateAssignCount();
+}
+
+function updateAssignCount() {
+  const n = Object.values(assignTemp).filter(v => v).length;
+  const el = document.getElementById('assignCount');
+  if (el) el.textContent = `${n} actividades serán asignadas`;
+}
+
+document.getElementById('assignClose').addEventListener('click', closeAssign);
+document.getElementById('assignCancel').addEventListener('click', closeAssign);
+document.getElementById('assignSave').addEventListener('click', async () => {
+  if (!assignTargetOwner) return;
+  let cambios = 0;
+  const promises = [];
+  Object.keys(assignTemp).forEach(key => {
+    const idx = parseInt(key);
+    const shouldBe = assignTemp[key];
+    const isNow = state[idx].owner === assignTargetOwner;
+    if (shouldBe && !isNow) { state[idx].owner = assignTargetOwner; promises.push(guardarItem(state[idx].id, { owner: assignTargetOwner })); cambios++; }
+    else if (!shouldBe && isNow) { state[idx].owner = ''; promises.push(guardarItem(state[idx].id, { owner: '' })); cambios++; }
+  });
+  await Promise.all(promises);
+  closeAssign(); renderAll();
+  showToast(`${cambios} cambio${cambios === 1 ? '' : 's'} guardado${cambios === 1 ? '' : 's'}`);
+});
+
+function closeAssign() {
+  document.getElementById('modalAssign').classList.remove('show');
+  assignTargetOwner = null;
+  assignTemp = {};
+}
+
+/* ============================================================
+   13. RESPONSABLES (CRUD)
+   ============================================================ */
+document.getElementById('btnAddOwner').addEventListener('click', () => addOwner());
+
+function addOwner() {
+  document.getElementById('modalTitle').textContent = 'Agregar responsable';
+  document.getElementById('modalBody').innerHTML = `
+    <label>Nombre completo</label>
+    <input type="text" id="owName" placeholder="Ej. Juan Pérez">
+    <label>Rol / Área</label>
+    <input type="text" id="owRole" placeholder="Ej. Responsable de Calidad">
+    <label>Email (opcional)</label>
+    <input type="email" id="owEmail" placeholder="juan@empresa.com">
+    <label>Color del avatar</label>
+    <div class="color-row" id="colorRow">
+      ${AVATAR_COLORS.map((c,i) => `<div class="color-opt ${i===0?'selected':''}" data-color="${c}" style="background:${c}"></div>`).join('')}
+    </div>
+  `;
+  document.querySelectorAll('#colorRow .color-opt').forEach(el => {
+    el.onclick = () => {
+      document.querySelectorAll('#colorRow .color-opt').forEach(x => x.classList.remove('selected'));
+      el.classList.add('selected');
+    };
+  });
+  document.getElementById('modal').classList.add('show');
+  modalCallback = () => {
+    const name = document.getElementById('owName').value.trim();
+    const role = document.getElementById('owRole').value.trim() || 'Responsable de área';
+    const email = document.getElementById('owEmail').value.trim();
+    const color = document.querySelector('#colorRow .color-opt.selected')?.dataset.color || AVATAR_COLORS[0];
+    if (!name) { showToast('El nombre es obligatorio'); return; }
+    if (owners.some(o => o.name.toLowerCase() === name.toLowerCase())) { showToast('Ya existe un responsable con ese nombre'); return; }
+    owners.push({ id: 'own_' + Date.now(), name, role, email, color });
+    guardarOwners(); renderAll();
+    showToast(`${name} agregado al equipo`);
+  };
+}
+
+function editOwner(id) {
+  const o = owners.find(x => x.id === id);
+  if (!o) return;
+  const oldName = o.name;
+  document.getElementById('modalTitle').textContent = 'Editar responsable';
+  document.getElementById('modalBody').innerHTML = `
+    <label>Nombre completo</label>
+    <input type="text" id="owName" value="${o.name}">
+    <label>Rol / Área</label>
+    <input type="text" id="owRole" value="${o.role || ''}">
+    <label>Email (opcional)</label>
+    <input type="email" id="owEmail" value="${o.email || ''}">
+    <label>Color del avatar</label>
+    <div class="color-row" id="colorRow">
+      ${AVATAR_COLORS.map(c => `<div class="color-opt ${c===o.color?'selected':''}" data-color="${c}" style="background:${c}"></div>`).join('')}
+    </div>
+  `;
+  document.querySelectorAll('#colorRow .color-opt').forEach(el => {
+    el.onclick = () => {
+      document.querySelectorAll('#colorRow .color-opt').forEach(x => x.classList.remove('selected'));
+      el.classList.add('selected');
+    };
+  });
+  document.getElementById('modal').classList.add('show');
+  modalCallback = async () => {
+    const name = document.getElementById('owName').value.trim();
+    const role = document.getElementById('owRole').value.trim() || 'Responsable de área';
+    const email = document.getElementById('owEmail').value.trim();
+    const color = document.querySelector('#colorRow .color-opt.selected')?.dataset.color || o.color;
+    if (!name) { showToast('El nombre es obligatorio'); return; }
+    o.name = name; o.role = role; o.email = email; o.color = color;
+    if (oldName !== name) {
+      const promises = [];
+      state.forEach(s => { if (s.owner === oldName) { s.owner = name; promises.push(guardarItem(s.id, { owner: name })); } });
+      await Promise.all(promises);
+    }
+    guardarOwners(); renderAll();
+    showToast('Responsable actualizado');
+  };
+}
+
+function deleteOwner(id) {
+  const o = owners.find(x => x.id === id);
+  if (!o) return;
+  const items = state.filter(s => s.owner === o.name).length;
+  document.getElementById('modalTitle').textContent = 'Eliminar responsable';
+  document.getElementById('modalBody').innerHTML = `¿Eliminar a <strong>${o.name}</strong>? Tiene <strong>${items}</strong> actividades asignadas que quedarán sin asignar.`;
+  document.getElementById('modal').classList.add('show');
+  modalCallback = async () => {
+    const promises = [];
+    state.forEach(s => { if (s.owner === o.name) { s.owner = ''; promises.push(guardarItem(s.id, { owner: '' })); } });
+    await Promise.all(promises);
+    owners = owners.filter(x => x.id !== id);
+    guardarOwners(); renderAll();
+    showToast(`${o.name} eliminado`);
+  };
+}
+
+/* ============================================================
+   14. FECHA DE AUDITORÍA
+   ============================================================ */
+document.getElementById('btnSetDate').addEventListener('click', openDateModal);
+document.getElementById('btnChangeDate').addEventListener('click', openDateModal);
+
+function openDateModal() {
+  const iso = auditDate.toISOString().slice(0,10);
+  document.getElementById('modalTitle').textContent = 'Fijar fecha de auditoría';
+  document.getElementById('modalBody').innerHTML = `
+    <label>Fecha de auditoría externa</label>
+    <input type="date" id="dateInput" value="${iso}">
+    <div style="font-size:11px;color:var(--gris-text)">A partir de esta fecha se calcula la cuenta regresiva, los hitos y la proyección.</div>
+  `;
+  document.getElementById('modal').classList.add('show');
+  modalCallback = () => {
+    const val = document.getElementById('dateInput').value;
+    if (val) { auditDate = new Date(val + 'T09:00:00'); guardarFecha(); renderAll(); showToast('Fecha actualizada'); }
+  };
+}
+
+/* ============================================================
+   15. EXPORTACIÓN
+   ============================================================ */
+document.getElementById('btnExportJSON').addEventListener('click', () => {
+  const f = calcularProyeccion();
+  const ownersSummary = owners.map(o => ({ ...o, stats: computeOwnerStats(o.name), reason: computeReason(o.name), carga: getOwnerLoadPct(o.name) }));
+  const data = {
+    meta: { fechaAuditoria: auditDate.toISOString(), exportado: new Date().toISOString(), preparacionActual: f.pctActual, proyeccionFinal: f.pctFinal, diasRestantes: f.diasRestantes, exportadoPor: currentUser },
+    equipo: ownersSummary,
+    items: auditData.map((d, i) => ({
+      id: state[i].id, bloque: d.std, clausula: d.clause, pregunta: d.q, evidencia: d.ev,
+      critico: state[i].critical, peso: state[i].weight, estado: estadoDeItem(state[i]), responsable: state[i].owner,
+      fechaLimite: state[i].due, observaciones: state[i].remarks
+    }))
+  };
+  descargar(new Blob([JSON.stringify(data, null, 2)], {type:'application/json'}), `preparacion_auditoria_${fecha()}.json`);
+  showToast('JSON exportado');
+});
+
+document.getElementById('btnExportCSV').addEventListener('click', () => {
+  const filas = [['id','Bloque','Cláusula','Pregunta','Evidencia esperada','Crítico','Peso','Estado','Responsable','Fecha límite','Observaciones']];
+  auditData.forEach((d, i) => {
+    filas.push([
+      state[i].id, d.std, d.clause, `"${d.q.replace(/"/g,'""')}"`, `"${d.ev.replace(/"/g,'""')}"`,
+      state[i].critical ? 'SÍ' : 'NO', state[i].weight || 1, estadoDeItem(state[i]),
+      `"${(state[i].owner || '').replace(/"/g,'""')}"`, state[i].due || '',
+      `"${(state[i].remarks || '').replace(/"/g,'""')}"`
+    ]);
+  });
+  const csv = '\uFEFF' + filas.map(f => f.join(',')).join('\n');
+  descargar(new Blob([csv], {type:'text/csv;charset=utf-8;'}), `preparacion_auditoria_${fecha()}.csv`);
+  showToast('CSV exportado');
+});
+
+document.getElementById('btnPrint').addEventListener('click', () => window.print());
+
+/* ============================================================
+   16. SINCRONIZACIÓN AUTOMÁTICA
+   ============================================================ */
+let syncInProgress = false;
+
+async function sincronizar(silencioso = true) {
+  if (syncInProgress) return;
+  syncInProgress = true;
+  try {
+    const rows = await cargarState();
+    const nuevosItems = rows.map(parseRow);
+    const hayCambios = JSON.stringify(nuevosItems) !== JSON.stringify(state);
+    if (hayCambios) {
+      state = nuevosItems;
+      auditData = state.map(s => ({ std: s.std, clause: s.clause, q: s.q, ev: s.ev, critical: s.critical, weight: s.weight }));
+      renderAll();
+      if (!silencioso) showToast('Datos actualizados');
+    }
+    setSyncStatus('connected');
+    lastSyncAt = new Date();
+  } catch (err) {
+    console.error('Error al sincronizar:', err);
+    setSyncStatus('error');
+  } finally {
+    syncInProgress = false;
+  }
+}
+
+document.getElementById('btnSync').addEventListener('click', () => {
+  showToast('Sincronizando…');
+  sincronizar(false);
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && lastSyncAt && (Date.now() - lastSyncAt.getTime()) > 30000) {
+    sincronizar(true);
+  }
+});
+
+/* ============================================================
+   17. UTILIDADES
+   ============================================================ */
+function descargar(blob, nombre) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = nombre;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+function fecha() {
+  const d = new Date();
+  return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+}
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+let modalCallback = null;
+document.getElementById('modalCancel').addEventListener('click', () => { document.getElementById('modal').classList.remove('show'); modalCallback = null; });
+document.getElementById('modalConfirm').addEventListener('click', () => {
+  document.getElementById('modal').classList.remove('show');
+  if (modalCallback) modalCallback();
+  modalCallback = null;
+});
+
+/* Atajos de teclado */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (document.getElementById('modal').classList.contains('show')) document.getElementById('modalCancel').click();
+    else if (document.getElementById('modalAssign').classList.contains('show')) closeAssign();
+    else if (e.target.id === 'searchInput' && e.target.value) { e.target.value = ''; e.target.dispatchEvent(new Event('input')); }
+    return;
+  }
+  if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName) || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.key === '/') { e.preventDefault(); document.getElementById('searchInput').focus(); return; }
+  const v = { '1':'dashboard', '2':'equipo', '3':'rutaCritica', '4':'checklist' }[e.key];
+  if (v) document.querySelector(`.nav-item[data-view="${v}"]`).click();
+});
+
+/* ============================================================
+   18. ARRANQUE
+   ============================================================ */
+(async function init() {
+  setSyncStatus('saving');
+  try {
+    const rows = await cargarState();
+    state = rows.map(parseRow);
+    auditData = state.map(s => ({ std: s.std, clause: s.clause, q: s.q, ev: s.ev, critical: s.critical, weight: s.weight }));
+    setSyncStatus('connected');
+    lastSyncAt = new Date();
+    renderAll();
+  } catch (err) {
+    console.error('Error inicial:', err);
+    setSyncStatus('error');
+    document.getElementById('main').innerHTML = `
+      <div class="empty">
+        <div class="big">⚠</div>
+        <div style="font-size:16px;font-weight:bold;margin-bottom:8px">No se pudo conectar con Google Sheets</div>
+        <div style="margin-bottom:16px">Revisa tu conexión a internet y que el Apps Script esté publicado correctamente.</div>
+        <button class="btn btn-primary" onclick="location.reload()">Reintentar</button>
+      </div>`;
+  }
+  setInterval(updateCountdown, 1000);
+  setInterval(() => sincronizar(true), SYNC_INTERVAL);
+})();
+</script>
+</body>
+</html>

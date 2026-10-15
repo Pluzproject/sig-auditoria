@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIG Readiness · Acceso</title>
+<style>
+  :root {
+    --azul: #3B599F;
+    --azul-dark: #2C4276;
+    --amarillo: #FBC13F;
+    --gris-bg: #F5F6F8;
+    --gris-line: #E3E6ED;
+    --gris-text: #6B7280;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg, var(--azul) 0%, var(--azul-dark) 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    color: #fff;
+  }
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 44px 40px;
+    max-width: 520px;
+    width: 100%;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+    text-align: center;
+  }
+  .logo {
+    width: 72px; height: 72px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, var(--azul), var(--azul-dark));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; font-weight: bold;
+    color: var(--amarillo);
+    margin: 0 auto 20px;
+  }
+  h1 { font-size: 22px; color: var(--azul); margin-bottom: 8px; line-height: 1.25; }
+  .sub { font-size: 13px; color: var(--gris-text); margin-bottom: 28px; line-height: 1.5; }
+  .divider { height: 1px; background: var(--gris-line); margin: 24px 0; }
+  .btn-enter {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; padding: 16px 24px;
+    background: var(--azul); color: #fff;
+    font-size: 15px; font-weight: bold;
+    text-decoration: none; border-radius: 10px;
+    transition: background 0.2s, transform 0.15s;
+    border: none; cursor: pointer;
+  }
+  .btn-enter:hover { background: var(--azul-dark); transform: translateY(-2px); }
+  .info {
+    background: var(--gris-bg); border-left: 4px solid var(--amarillo);
+    border-radius: 8px; padding: 14px 16px;
+    text-align: left; font-size: 12px; color: var(--azul);
+    line-height: 1.55; margin-top: 24px;
+  }
+  .info strong { color: var(--azul-dark); display: block; margin-bottom: 4px; }
+  .steps { text-align: left; font-size: 12px; color: var(--gris-text); line-height: 1.7; margin-top: 16px; }
+  .steps li { margin-left: 18px; margin-bottom: 4px; }
+  .badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+  .badge { font-size: 10px; font-weight: bold; padding: 4px 10px; border-radius: 20px; background: var(--gris-bg); color: var(--azul); letter-spacing: 0.4px; }
+  .footer { text-align: center; font-size: 11px; color: var(--gris-text); margin-top: 24px; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">SIG</div>
+    <h1>SIG Readiness</h1>
+    <p class="sub">
+      Sistema de preparación para la auditoría externa<br>
+      Sistema Integrado de Gestión
+    </p>
+
+    <div class="badges">
+      <span class="badge">ISO 9001</span>
+      <span class="badge">ISO 14001</span>
+      <span class="badge">ISO 45001</span>
+      <span class="badge">ISO 37001</span>
+      <span class="badge">ISO 50001</span>
+    </div>
+
+    <a href="auditoria.html" class="btn-enter">Entrar a la aplicación →</a>
+
+    <div class="info">
+      <strong>Importante antes de empezar</strong>
+      Los datos se sincronizan automáticamente entre todos los usuarios cada 2 minutos. Los cambios que hagas serán visibles para todo el equipo.
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="steps">
+      <strong style="color:var(--azul-dark);font-size:12px">Cómo usarla</strong>
+      <ol>
+        <li>Abre la aplicación desde este enlace.</li>
+        <li>Fija la fecha de auditoría (botón 📅 en la barra superior).</li>
+        <li>Actualiza el estado de los ítems que tengas asignados.</li>
+        <li>Tus cambios se guardan automáticamente en Google Sheets.</li>
+        <li>Todos verán los cambios en máximo 2 minutos.</li>
+      </ol>
+    </div>
+
+    <div class="footer">Coordinación SIG · Auditoría externa</div>
+  </div>
+</body>
+</html>
