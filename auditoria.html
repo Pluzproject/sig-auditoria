@@ -2340,12 +2340,14 @@ document.addEventListener('keydown', e => {
     state = rows.map(parseRow);
     auditData = state.map(s => ({ std: s.std, clause: s.clause, q: s.q, ev: s.ev, critical: s.critical, weight: s.weight }));
     
-    // 2. Cargar la fecha desde la nueva hoja
+    // 2. Cargar la fecha DESDE LA NUBE (obligatorio)
     const resFecha = await fetch(`${API_URL}?action=getConfig&key=${API_KEY}`);
     const dataFecha = await resFecha.json();
-    if (dataFecha.fecha) {
+    
+    // Si la nube responde con una fecha válida, la aplicamos
+    if (dataFecha && dataFecha.fecha) {
       auditDate = new Date(dataFecha.fecha + 'T09:00:00');
-      guardarFecha();
+      guardarFecha(); // Actualiza el caché local con la fecha de la nube
     }
 
     setSyncStatus('connected');
