@@ -2171,12 +2171,42 @@ function openDateModal() {
   document.getElementById('modalBody').innerHTML = `
     <label>Fecha de auditoría externa</label>
     <input type="date" id="dateInput" value="${iso}">
-    <div style="font-size:11px;color:var(--gris-text)">A partir de esta fecha se calcula la cuenta regresiva y la proyección.</div>
+    <div style="font-size:11px;color:var(--gris-text);margin-top:8px;background:var(--azul-soft);padding:8px;border-radius:6px">
+      💡 Esta fecha se guardará en la nube y será visible para todo el equipo.
+    </div>
   `;
   document.getElementById('modal').classList.add('show');
-  modalCallback = () => {
+  
+  modalCallback = async () => {
     const val = document.getElementById('dateInput').value;
-    if (val) { auditDate = new Date(val + 'T09:00:00'); guardarFecha(); renderAll(); showToast('Fecha actualizada'); }
+    if (!val) return;
+    
+    setSyncStatus('saving');
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({ 
+          key: API_KEY, 
+          action: 'setConfig', 
+          fecha: val 
+        })
+      });
+      const data = await res.json();
+      
+      if (data.result === 'success') {
+        auditDate = new Date(val + 'T09:00:00'); 
+        guardarFecha(); 
+        renderAll(); 
+        setSyncStatus('connected');
+        showToast('Fecha guardada para todo el equipo');
+      } else {
+        throw new Error(data.message || 'Error al guardar');
+      }
+    } catch(err) {
+      console.error(err);
+      setSyncStatus('error');
+      showToast('Error al guardar la fecha');
+    }
   };
 }
 
@@ -2305,9 +2335,19 @@ document.addEventListener('keydown', e => {
 (async function init() {
   setSyncStatus('saving');
   try {
+    // 1. Cargar los ítems
     const rows = await cargarState();
     state = rows.map(parseRow);
     auditData = state.map(s => ({ std: s.std, clause: s.clause, q: s.q, ev: s.ev, critical: s.critical, weight: s.weight }));
+    
+    // 2. Cargar la fecha desde la nueva hoja
+    const resFecha = await fetch(`${API_URL}?action=getConfig&key=${API_KEY}`);
+    const dataFecha = await resFecha.json();
+    if (dataFecha.fecha) {
+      auditDate = new Date(dataFecha.fecha + 'T09:00:00');
+      guardarFecha();
+    }
+
     setSyncStatus('connected');
     lastSyncAt = new Date();
     renderAll();
