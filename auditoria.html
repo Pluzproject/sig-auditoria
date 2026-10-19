@@ -2255,8 +2255,19 @@ async function sincronizar(silencioso = true) {
   if (syncInProgress) return;
   syncInProgress = true;
   try {
+    // 1. Descargar ítems
     const rows = await cargarState();
     const nuevosItems = rows.map(parseRow);
+    
+    // 2. Descargar la fecha de la nube
+    const resFecha = await fetch(`${API_URL}?action=getConfig&key=${API_KEY}`);
+    const dataFecha = await resFecha.json();
+    if (dataFecha && dataFecha.fecha) {
+      auditDate = new Date(dataFecha.fecha + 'T09:00:00');
+      guardarFecha(); // Actualizamos la memoria local con la fecha de la nube
+    }
+
+    // 3. Comprobar si hay cambios para actualizar la pantalla
     const hayCambios = JSON.stringify(nuevosItems) !== JSON.stringify(state);
     if (hayCambios) {
       state = nuevosItems;
@@ -2264,6 +2275,10 @@ async function sincronizar(silencioso = true) {
       renderAll();
       if (!silencioso) showToast('Datos actualizados');
     }
+    
+    // Forzamos redibujado por si cambió la fecha
+    updateCountdown(); 
+    
     setSyncStatus('connected');
     lastSyncAt = new Date();
   } catch (err) {
@@ -2273,7 +2288,6 @@ async function sincronizar(silencioso = true) {
     syncInProgress = false;
   }
 }
-
 document.getElementById('btnSync').addEventListener('click', () => {
   showToast('Sincronizando…');
   sincronizar(false);
