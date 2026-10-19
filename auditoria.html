@@ -85,7 +85,7 @@
   .cd-lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.7); font-weight: bold; margin-top: 5px; }
   .hero-right { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; gap: 8px; }
 
-  /* ===== HERO STATUS · versión con fondo oscuro legible ===== */
+  /* ===== HERO STATUS ===== */
   .hero-status {
     padding: 7px 16px;
     border-radius: 20px;
@@ -786,7 +786,7 @@ const MIN_DIAS_HISTORIAL = 3;
 let state = [];
 let auditData = [];
 let owners = cargarOwners();
-let auditDate = cargarFecha();
+let auditDate = new Date(); // Inicia en hoy, se sobrescribe con la nube
 let progressHistory = cargarHistorial();
 let currentUser = localStorage.getItem('sig_user_name') || '';
 let syncState = 'idle';
@@ -811,10 +811,6 @@ function cargarOwners() {
 }
 function guardarOwners() { try { localStorage.setItem(STORAGE_OWNERS, JSON.stringify(owners)); } catch(e) {} }
 
-function cargarFecha() {
-  try { const raw = localStorage.getItem(STORAGE_DATE); if (raw) return new Date(raw); } catch(e) {}
-  const d = new Date(); d.setDate(d.getDate() + 60); return d;
-}
 function guardarFecha() { try { localStorage.setItem(STORAGE_DATE, auditDate.toISOString()); } catch(e) {} }
 
 function cargarHistorial() {
@@ -2288,6 +2284,7 @@ async function sincronizar(silencioso = true) {
     syncInProgress = false;
   }
 }
+
 document.getElementById('btnSync').addEventListener('click', () => {
   showToast('Sincronizando…');
   sincronizar(false);
@@ -2354,19 +2351,26 @@ document.addEventListener('keydown', e => {
     state = rows.map(parseRow);
     auditData = state.map(s => ({ std: s.std, clause: s.clause, q: s.q, ev: s.ev, critical: s.critical, weight: s.weight }));
     
-    // 2. Cargar la fecha DESDE LA NUBE (obligatorio)
-    const resFecha = await fetch(`${API_URL}?action=getConfig&key=${API_KEY}`);
-    const dataFecha = await resFecha.json();
-    
-    // Si la nube responde con una fecha válida, la aplicamos
-    if (dataFecha && dataFecha.fecha) {
-      auditDate = new Date(dataFecha.fecha + 'T09:00:00');
-      guardarFecha(); // Actualiza el caché local con la fecha de la nube
+    // 2. Cargar la fecha DIRECTAMENTE DE GOOGLE SHEETS
+    try {
+      const resFecha = await fetch(`${API_URL}?action=getConfig&key=${API_KEY}`);
+      const dataFecha = await resFecha.json();
+      
+      if (dataFecha && dataFecha.fecha) {
+        // Si la nube dice "2026-12-23", la forzamos como la única fecha válida
+        auditDate = new Date(dataFecha.fecha + 'T09:00:00');
+        localStorage.setItem('sig_audit_v12_date', auditDate.toISOString()); // Respaldo local
+      } else {
+        console.warn("Google Sheets no devolvió fecha. Revisa la hoja fecha_AUD.");
+      }
+    } catch (e) {
+      console.error("Error cargando fecha de la nube", e);
     }
 
     setSyncStatus('connected');
     lastSyncAt = new Date();
     renderAll();
+    
   } catch (err) {
     console.error('Error inicial:', err);
     setSyncStatus('error');
