@@ -2251,29 +2251,29 @@ async function sincronizar(silencioso = true) {
   if (syncInProgress) return;
   syncInProgress = true;
   try {
-    // 1. Descargar ítems
     const rows = await cargarState();
     const nuevosItems = rows.map(parseRow);
     
-    // 2. Descargar la fecha de la nube
+    // Sincronizar fecha
     const resFecha = await fetch(`${API_URL}?action=getConfig&key=${API_KEY}`);
     const dataFecha = await resFecha.json();
     if (dataFecha && dataFecha.fecha) {
-      auditDate = new Date(dataFecha.fecha + 'T09:00:00');
-      guardarFecha(); // Actualizamos la memoria local con la fecha de la nube
+      const fechaReal = new Date(dataFecha.fecha);
+      if (!isNaN(fechaReal.getTime())) {
+        auditDate = fechaReal;
+        guardarFecha();
+      }
     }
 
-    // 3. Comprobar si hay cambios para actualizar la pantalla
     const hayCambios = JSON.stringify(nuevosItems) !== JSON.stringify(state);
     if (hayCambios) {
       state = nuevosItems;
       auditData = state.map(s => ({ std: s.std, clause: s.clause, q: s.q, ev: s.ev, critical: s.critical, weight: s.weight }));
       renderAll();
       if (!silencioso) showToast('Datos actualizados');
+    } else {
+      updateCountdown(); 
     }
-    
-    // Forzamos redibujado por si cambió la fecha
-    updateCountdown(); 
     
     setSyncStatus('connected');
     lastSyncAt = new Date();
@@ -2357,9 +2357,12 @@ document.addEventListener('keydown', e => {
       const dataFecha = await resFecha.json();
       
       if (dataFecha && dataFecha.fecha) {
-        // Si la nube dice "2026-12-23", la forzamos como la única fecha válida
-        auditDate = new Date(dataFecha.fecha + 'T09:00:00');
-        localStorage.setItem('sig_audit_v12_date', auditDate.toISOString()); // Respaldo local
+        // Convertimos el texto largo de Google ("Fri Dec 25 2026...") a fecha real
+        const fechaReal = new Date(dataFecha.fecha);
+        if (!isNaN(fechaReal.getTime())) {
+          auditDate = fechaReal;
+          localStorage.setItem('sig_audit_v12_date', auditDate.toISOString()); // Respaldo local
+        }
       } else {
         console.warn("Google Sheets no devolvió fecha. Revisa la hoja fecha_AUD.");
       }
